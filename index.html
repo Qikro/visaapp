@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visaura — AI-Powered Visa Application Document Compiler</title>
+    <meta name="description" content="Upload your requirements, and let Visaura compile your perfect visa application package in minutes.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        trust: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
+                    },
+                    boxShadow: {
+                        'cta': '0 10px 40px -10px rgba(30, 58, 138, 0.45)',
+                        'cta-hover': '0 16px 48px -8px rgba(30, 58, 138, 0.55)',
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        :focus-visible {
+            outline: 2px solid #2563eb;
+            outline-offset: 2px;
+        }
+
+        .cta-btn {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .cta-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+
+        .cta-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        @keyframes scan-line {
+            0% { top: 0; opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { top: calc(100% - 4px); opacity: 0.6; }
+        }
+
+        @keyframes assemble-pulse {
+            0%, 100% { opacity: 0.4; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        .scan-line {
+            animation: scan-line 1.4s ease-in-out infinite;
+        }
+
+        .assemble-page {
+            animation: assemble-pulse 0.8s ease-in-out infinite;
+        }
+
+        .assemble-page:nth-child(2) { animation-delay: 0.15s; }
+        .assemble-page:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-up {
+            animation: fade-up 0.5s ease-out forwards;
+        }
+
+        .stepper-line {
+            background: linear-gradient(90deg, #1e3a8a 0%, #93c5fd 100%);
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-800 antialiased">
+    <!-- Navigation -->
+    <nav class="border-b border-slate-200 bg-white/90 backdrop-blur-sm sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <img src="logo.svg" alt="Visaura logo" class="h-9 w-auto" />
+                <span class="text-xl font-bold text-trust-900 tracking-tight">Visaura</span>
+            </a>
+            <div class="hidden sm:flex items-center gap-8 text-sm font-medium text-slate-600">
+                <a href="#features" class="hover:text-trust-700 transition">Features</a>
+                <a href="#how-it-works" class="hover:text-trust-700 transition">How It Works</a>
+                <a href="app.html" class="text-trust-700 hover:text-trust-900 transition">Sign In</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-trust-50/80 to-white pointer-events-none"></div>
+        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20 sm:pt-24 sm:pb-28 text-center">
+            <p class="inline-flex items-center gap-2 rounded-full bg-trust-50 border border-trust-100 px-4 py-1.5 text-sm font-medium text-trust-700 mb-8">
+                <span class="h-2 w-2 rounded-full bg-trust-500"></span>
+                AI-Powered Visa Document Compiler
+            </p>
+
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-trust-900 tracking-tight leading-tight max-w-4xl mx-auto">
+                Your Visa Journey, Simplified.
+            </h1>
+
+            <p class="mt-6 text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+                Upload your requirements, and let Visaura compile your perfect application package in minutes.
+            </p>
+
+            <div class="mt-10 flex flex-col items-center gap-4">
+                <button
+                    id="start-compile-btn"
+                    type="button"
+                    class="cta-btn inline-flex items-center justify-center gap-3 rounded-xl bg-trust-900 px-10 py-4 text-lg font-semibold text-white shadow-cta hover:shadow-cta-hover hover:bg-trust-700 min-w-[220px]"
+                >
+                    <span id="cta-label">Start Compile</span>
+                    <svg id="cta-arrow" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
+                </button>
+
+                <!-- Loading / Scan Animation -->
+                <div id="compile-loading" class="hidden flex-col items-center gap-4 mt-2">
+                    <div class="relative w-24 h-28 rounded-lg border-2 border-trust-200 bg-white shadow-sm overflow-hidden">
+                        <div class="absolute inset-x-3 top-3 space-y-2">
+                            <div class="h-1.5 w-3/4 rounded bg-slate-200"></div>
+                            <div class="h-1.5 w-full rounded bg-slate-100"></div>
+                            <div class="h-1.5 w-5/6 rounded bg-slate-100"></div>
+                            <div class="h-1.5 w-2/3 rounded bg-slate-100"></div>
+                        </div>
+                        <div class="scan-line absolute left-0 right-0 h-1 bg-trust-500 shadow-[0_0_12px_rgba(37,99,235,0.6)]"></div>
+                    </div>
+                    <div class="flex items-end gap-1 h-8">
+                        <div class="assemble-page w-5 h-7 rounded-sm bg-trust-100 border border-trust-200"></div>
+                        <div class="assemble-page w-5 h-7 rounded-sm bg-trust-200 border border-trust-300"></div>
+                        <div class="assemble-page w-5 h-7 rounded-sm bg-trust-300 border border-trust-400"></div>
+                    </div>
+                    <p class="text-sm font-medium text-trust-700">Assembling your application package...</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stepper (revealed after CTA) -->
+    <section id="how-it-works" class="hidden py-12 sm:py-16 bg-slate-50 border-y border-slate-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 fade-up">
+            <h2 class="text-2xl sm:text-3xl font-bold text-trust-900 text-center mb-2">How Visaura Works</h2>
+            <p class="text-slate-600 text-center mb-10">A clear path from upload to download — no guesswork.</p>
+
+            <div class="relative">
+                <div class="hidden sm:block absolute top-8 left-[12%] right-[12%] h-0.5 stepper-line rounded-full opacity-30"></div>
+                <ol id="stepper" class="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-4">
+                    <li class="flex flex-col items-center text-center">
+                        <div class="step-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white border-2 border-trust-900 text-trust-900 shadow-sm mb-3">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                        </div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-trust-700">Step 1</span>
+                        <span class="mt-1 font-semibold text-trust-900">Upload</span>
+                        <span class="mt-1 text-sm text-slate-500">Add your documents</span>
+                    </li>
+                    <li class="flex flex-col items-center text-center">
+                        <div class="step-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white border-2 border-slate-200 text-slate-400 shadow-sm mb-3">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                        </div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Step 2</span>
+                        <span class="mt-1 font-semibold text-slate-600">Review</span>
+                        <span class="mt-1 text-sm text-slate-500">Verify compliance</span>
+                    </li>
+                    <li class="flex flex-col items-center text-center">
+                        <div class="step-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white border-2 border-slate-200 text-slate-400 shadow-sm mb-3">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                        </div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Step 3</span>
+                        <span class="mt-1 font-semibold text-slate-600">Compile</span>
+                        <span class="mt-1 text-sm text-slate-500">AI assembles package</span>
+                    </li>
+                    <li class="flex flex-col items-center text-center">
+                        <div class="step-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white border-2 border-slate-200 text-slate-400 shadow-sm mb-3">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        </div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Step 4</span>
+                        <span class="mt-1 font-semibold text-slate-600">Download</span>
+                        <span class="mt-1 text-sm text-slate-500">Get your packet</span>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="mt-10 text-center">
+                <a
+                    id="continue-app-btn"
+                    href="app.html"
+                    class="cta-btn inline-flex items-center justify-center rounded-xl bg-trust-900 px-8 py-3.5 text-base font-semibold text-white shadow-cta hover:shadow-cta-hover hover:bg-trust-700"
+                >
+                    Continue to Application
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Proposition -->
+    <section id="features" class="py-16 sm:py-24">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-14">
+                <h2 class="text-2xl sm:text-3xl font-bold text-trust-900">Built for confidence</h2>
+                <p class="mt-3 text-slate-600 max-w-xl mx-auto">Everything you need to submit a compliant, polished visa application.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+                <article class="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md hover:border-trust-100 transition">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-trust-50 text-trust-700 mb-5">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-trust-900">AI-Verified Compliance</h3>
+                    <p class="mt-2 text-slate-600 leading-relaxed">Ensure your documents meet strict embassy standards.</p>
+                </article>
+
+                <article class="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md hover:border-trust-100 transition">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-trust-50 text-trust-700 mb-5">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-trust-900">Secure Storage</h3>
+                    <p class="mt-2 text-slate-600 leading-relaxed">End-to-end encryption for your sensitive data.</p>
+                </article>
+
+                <article class="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md hover:border-trust-100 transition">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-trust-50 text-trust-700 mb-5">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-trust-900">Automated Formatting</h3>
+                    <p class="mt-2 text-slate-600 leading-relaxed">Perfect, error-free document assembly.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Disclaimer -->
+    <section class="py-8 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-3xl mx-auto px-4 text-center">
+            <p class="text-sm text-slate-500 flex items-center justify-center gap-2">
+                <svg class="w-4 h-4 text-trust-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                Visaura uses secure encryption. Your data is never shared with third parties.
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 bg-white py-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2">
+                <img src="logo.svg" alt="" class="h-7 w-auto opacity-80" aria-hidden="true" />
+                <span class="font-semibold text-trust-900">Visaura</span>
+            </div>
+            <nav class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-600">
+                <a href="about.html" class="hover:text-trust-700 transition">About</a>
+                <a href="privacy.html" class="hover:text-trust-700 transition">Privacy</a>
+                <a href="support.html" class="hover:text-trust-700 transition">Support</a>
+            </nav>
+            <p class="text-xs text-slate-400">&copy; 2026 Visaura. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const startCompileBtn = document.getElementById('start-compile-btn');
+        const compileLoading = document.getElementById('compile-loading');
+        const ctaLabel = document.getElementById('cta-label');
+        const ctaArrow = document.getElementById('cta-arrow');
+        const howItWorks = document.getElementById('how-it-works');
+        const stepIcons = document.querySelectorAll('.step-icon');
+
+        let isAnimating = false;
+
+        startCompileBtn.addEventListener('click', () => {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            startCompileBtn.disabled = true;
+            startCompileBtn.classList.add('opacity-90', 'cursor-wait');
+            ctaArrow.classList.add('hidden');
+            ctaLabel.textContent = 'Preparing...';
+            compileLoading.classList.remove('hidden');
+            compileLoading.classList.add('flex');
+
+            setTimeout(() => {
+                howItWorks.classList.remove('hidden');
+                howItWorks.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                animateStepper();
+
+                startCompileBtn.disabled = false;
+                startCompileBtn.classList.remove('opacity-90', 'cursor-wait');
+                ctaArrow.classList.remove('hidden');
+                ctaLabel.textContent = 'Start Compile';
+                compileLoading.classList.add('hidden');
+                compileLoading.classList.remove('flex');
+                isAnimating = false;
+            }, 2200);
+        });
+
+        function animateStepper() {
+            stepIcons.forEach((icon, index) => {
+                setTimeout(() => {
+                    icon.classList.remove('border-slate-200', 'text-slate-400');
+                    icon.classList.add('border-trust-900', 'text-trust-900', 'scale-105');
+                    setTimeout(() => icon.classList.remove('scale-105'), 300);
+                }, index * 400);
+            });
+        }
+    </script>
+</body>
+</html>

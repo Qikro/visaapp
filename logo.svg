@@ -1,0 +1,22 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="birdGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0ea5e9" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+    <linearGradient id="wingGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#60a5fa" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="64" fill="#0f172a" />
+  <path d="M156 264c0-86 69-112 120-112s120 24 120 110c0 62-78 80-148 82-70 2-92-24-92-80z" fill="url(#birdGrad)" opacity="0.95" />
+  <path d="M152 264c22-36 52-58 88-66 34-8 65 1 88 22 28 25 32 60 18 92-14 32-56 52-110 50-46-1-74-20-84-42-8-16-10-34-10-56z" fill="#38bdf8" opacity="0.9" />
+  <path d="M172 200c22-16 46-24 72-24 21 0 42 6 60 18-18 0-38 6-58 18-22 13-38 32-48 56-10-18-16-38-16-68z" fill="url(#wingGrad)" />
+  <path d="M260 188c24-10 52-2 68 18-14 2-28 8-42 16-16 10-28 20-28 20s-10-34 2-54z" fill="#93c5fd" />
+  <path d="M216 280c28 0 56-14 76-24 18-8 32-18 32-18s-14 34-44 48c-30 14-52 8-64 6-10-2-18-4-24-12z" fill="#bfdbfe" />
+  <path d="M328 194s18-6 30 0 14 18 8 28c-6 10-22 16-30 12-8-4-14-8-14-18s6-22 6-22z" fill="#ffffff" opacity="0.9" />
+  <path d="M306 186c6-2 14 0 18 4 4 4 4 10 0 14-4 4-10 4-14 0-4-4-4-10-4-14 0-2 0-4 0-4z" fill="#ffffff" opacity="0.95" />
+  <text x="256" y="410" text-anchor="middle" font-family="Inter, sans-serif" font-size="72" font-weight="700" fill="#ffffff">visaura</text>
+  <text x="256" y="462" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" fill="#94a3b8">Visa Application Document Compiler</text>
+</svg>

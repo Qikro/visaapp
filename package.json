@@ -1,0 +1,18 @@
+{
+  "name": "visaapp",
+  "version": "1.0.0",
+  "description": "Visa application document compiler with Firebase authentication.",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.1.4",
+    "express": "^4.18.2",
+    "stripe": "^12.14.0",
+    "paytm-pg-node-sdk": "^1.0.4"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

@@ -978,6 +978,11 @@
 
         resetBtn.addEventListener('click', () => {
             visaTypeSelect.value = ''; applicantFormSection.classList.add('hidden'); photoSection.classList.add('hidden'); checklistSection.classList.add('hidden'); uploadSection.classList.add('hidden');
+            const dynamicChecklist = document.getElementById('checklist-container');
+            if (dynamicChecklist) {
+                dynamicChecklist.classList.add('opacity-0');
+                setTimeout(() => dynamicChecklist.classList.add('hidden'), 300);
+            }
             [applicantNameInput, applicantEmailInput, applicantPassportInput, applicantNationalitySelect, applicantDobInput].forEach(f => f.value = '');
             uploadedFilesList = []; displayUploadedFiles(); fileCount.classList.add('hidden');
             uploadedPhotoFile = null; photoPreview.src = ''; photoPreviewContainer.classList.add('hidden');
@@ -1000,6 +1005,28 @@
             uploadedFilesList.forEach(file => {
                 const fileItem = document.createElement('div'); fileItem.className = 'flex items-center gap-2 text-cyan-50 text-sm py-2 px-3 bg-white/5 border border-white/10 rounded-xl';
                 fileItem.innerHTML = `<svg class="w-4 h-4 text-cyan-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" /></svg><span class="truncate font-medium">${file.name}</span>`;
+                modalFilesList.appendChild(fileItem);
+            });
+            modalApplicantSummary.innerHTML = `<p><span class="font-semibold text-cyan-200">Name:</span> ${applicantNameInput.value}</p><p><span class="font-semibold text-cyan-200">Email:</span> ${applicantEmailInput.value}</p><p><span class="font-semibold text-cyan-200">Passport:</span> ${applicantPassportInput.value}</p><p><span class="font-semibold text-cyan-200">Nationality:</span> ${applicantNationalitySelect.value}</p>`;
+            if (uploadedPhotoFile) modalPhotoPreview.innerHTML = `<img src="${photoPreview.src}" class="w-full h-auto object-cover rounded-lg border border-white/10 shadow-lg" />`;
+            reviewModalOverlay.classList.remove('hidden');
+            requestAnimationFrame(() => { reviewModalOverlay.classList.remove('opacity-0'); reviewModalCard.classList.remove('scale-95', 'opacity-0'); reviewModalCard.classList.add('scale-100', 'opacity-100'); });
+        });
+
+        modalGoBackBtn.addEventListener('click', () => {
+            reviewModalOverlay.classList.add('opacity-0'); reviewModalCard.classList.remove('scale-100', 'opacity-100'); reviewModalCard.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => reviewModalOverlay.classList.add('hidden'), 300);
+        });
+
+        modalConfirmBtn.addEventListener('click', () => {
+            modalGoBackBtn.click();
+            submitBtn.disabled = false; submitBtn.classList.remove('from-cyan-500', 'to-blue-600', 'hover:from-cyan-400', 'hover:to-blue-500', 'shadow-[0_0_20px_rgba(6,182,212,0.3)]'); submitBtn.classList.add('from-emerald-500', 'to-teal-500', 'hover:from-emerald-400', 'hover:to-teal-400', 'download-ready', 'shadow-[0_0_20px_rgba(16,185,129,0.4)]');
+            buttonText.textContent = 'Success! Download Packet';
+            showStatus('Compilation simulated successfully. Your packet is ready.', 'success');
+        });
+    </script>
+</body>
+</html>e.name}</span>`;
                 modalFilesList.appendChild(fileItem);
             });
             modalApplicantSummary.innerHTML = `<p><span class="font-semibold text-cyan-200">Name:</span> ${applicantNameInput.value}</p><p><span class="font-semibold text-cyan-200">Email:</span> ${applicantEmailInput.value}</p><p><span class="font-semibold text-cyan-200">Passport:</span> ${applicantPassportInput.value}</p><p><span class="font-semibold text-cyan-200">Nationality:</span> ${applicantNationalitySelect.value}</p>`;

@@ -3,315 +3,248 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visaura — AI-Powered Visa Application Document Compiler</title>
-    <meta name="description" content="Upload your requirements, and let Visaura compile your perfect visa application package in minutes.">
+    <title>Visaura — Perfect Visa Application Compilation</title>
+    <meta name="description" content="A seamless, AI-driven journey to compile and perfect your visa documents.">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
                     colors: {
-                        trust: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#2563eb',
-                            700: '#1d4ed8',
-                            900: '#1e3a8a',
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
                         }
                     },
-                    boxShadow: {
-                        'cta': '0 10px 40px -10px rgba(30, 58, 138, 0.45)',
-                        'cta-hover': '0 16px 48px -8px rgba(30, 58, 138, 0.55)',
+                    animation: {
+                        'float-fast': 'float 3s ease-in-out infinite',
+                        'float-medium': 'float 5s ease-in-out infinite',
+                        'float-slow': 'float 7s ease-in-out infinite',
+                        'blob': 'blob 15s infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '100%': { transform: 'translate(50px, -50px) scale(1.1)' },
+                        }
                     }
                 }
             }
         };
     </script>
     <style>
-        :focus-visible {
-            outline: 2px solid #2563eb;
-            outline-offset: 2px;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            overflow-x: hidden;
         }
 
-        .cta-btn {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        /* Glassmorphism utility */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
         }
 
-        .cta-btn:hover:not(:disabled) {
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Abstract blurred shapes */
+        .shape-blob {
+            position: absolute;
+            filter: blur(90px);
+            border-radius: 50%;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        /* Button Hover Effects */
+        .btn-primary {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.4);
+        }
+        .btn-primary:hover {
             transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(14, 165, 233, 0.5);
         }
 
-        .cta-btn:active:not(:disabled) {
-            transform: translateY(0);
+        .btn-secondary {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        @keyframes scan-line {
-            0% { top: 0; opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { top: calc(100% - 4px); opacity: 0.6; }
-        }
-
-        @keyframes assemble-pulse {
-            0%, 100% { opacity: 0.4; transform: scale(0.95); }
-            50% { opacity: 1; transform: scale(1); }
-        }
-
-        .scan-line {
-            animation: scan-line 1.4s ease-in-out infinite;
-        }
-
-        .assemble-page {
-            animation: assemble-pulse 0.8s ease-in-out infinite;
-        }
-
-        .assemble-page:nth-child(2) { animation-delay: 0.15s; }
-        .assemble-page:nth-child(3) { animation-delay: 0.3s; }
-
-        @keyframes fade-up {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-up {
-            animation: fade-up 0.5s ease-out forwards;
-        }
-
-        .stepper-line {
-            background: linear-gradient(90deg, #1e3a8a 0%, #93c5fd 100%);
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            background: rgba(248, 250, 252, 0.8);
         }
     </style>
 </head>
-<body class="bg-white text-slate-800 antialiased">
+<body class="relative min-h-screen flex flex-col text-slate-800">
+    <!-- Background Abstract Shapes (Pastel geometric forms) -->
+    <div class="shape-blob bg-pink-200 w-[500px] h-[500px] top-[-100px] left-[-150px] animate-blob" style="animation-delay: 0s;"></div>
+    <div class="shape-blob bg-blue-200 w-[600px] h-[600px] top-[10%] right-[-150px] animate-blob" style="animation-delay: -5s; animation-direction: alternate-reverse;"></div>
+    <div class="shape-blob bg-emerald-100 w-[450px] h-[450px] bottom-[-100px] left-[20%] animate-blob" style="animation-delay: -10s;"></div>
+
     <!-- Navigation -->
-    <nav class="border-b border-slate-200 bg-white/90 backdrop-blur-sm sticky top-0 z-40">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <nav class="relative z-50 w-full glass-nav sticky top-0">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 h-20 flex items-center justify-between">
             <a href="index.html" class="flex items-center gap-3 group">
-                <img src="logo.svg" alt="Visaura logo" class="h-9 w-auto" />
-                <span class="text-xl font-bold text-trust-900 tracking-tight">Visaura</span>
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                    V
+                </div>
+                <span class="text-2xl font-extrabold text-slate-900 tracking-tight">Visaura</span>
             </a>
-            <div class="hidden sm:flex items-center gap-8 text-sm font-medium text-slate-600">
-                <a href="#features" class="hover:text-trust-700 transition">Features</a>
-                <a href="#how-it-works" class="hover:text-trust-700 transition">How It Works</a>
-                <a href="app.html" class="text-trust-700 hover:text-trust-900 transition">Sign In</a>
+            
+            <div class="hidden md:flex items-center gap-10 text-sm font-semibold text-slate-600">
+                <a href="#product" class="hover:text-brand-600 transition-colors">Product</a>
+                <a href="#solutions" class="hover:text-brand-600 transition-colors">Solutions</a>
+                <a href="#pricing" class="hover:text-brand-600 transition-colors">Pricing</a>
+                <a href="#company" class="hover:text-brand-600 transition-colors">Company</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="app.html" class="hidden sm:block text-sm font-semibold text-slate-600 hover:text-brand-600 transition-colors">Log in</a>
+                <a href="signup.html" class="px-5 py-2.5 rounded-full bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition-colors shadow-md">Get Started</a>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-b from-trust-50/80 to-white pointer-events-none"></div>
-        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20 sm:pt-24 sm:pb-28 text-center">
-            <p class="inline-flex items-center gap-2 rounded-full bg-trust-50 border border-trust-100 px-4 py-1.5 text-sm font-medium text-trust-700 mb-8">
-                <span class="h-2 w-2 rounded-full bg-trust-500"></span>
-                AI-Powered Visa Document Compiler
-            </p>
+    <!-- Main Hero Section -->
+    <main class="relative z-10 flex-grow flex items-center">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 w-full py-16 lg:py-24">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                
+                <!-- Left Column: Typography & CTAs -->
+                <div class="text-left flex flex-col items-start relative z-20">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-slate-200/50 mb-8 shadow-sm">
+                        <span class="flex h-2.5 w-2.5 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-500 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-500"></span>
+                        </span>
+                        <span class="text-xs font-bold text-brand-600 uppercase tracking-wide">Visaura OS 2.0 is Live</span>
+                    </div>
 
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-trust-900 tracking-tight leading-tight max-w-4xl mx-auto">
-                Your Visa Journey, Simplified.
-            </h1>
+                    <h1 class="text-5xl sm:text-6xl lg:text-[4.5rem] xl:text-[5rem] font-extrabold text-slate-900 tracking-tight leading-[1.05] mb-6">
+                        Visa success, <br/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-indigo-500 to-purple-600">perfectly compiled.</span>
+                    </h1>
 
-            <p class="mt-6 text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-                Upload your requirements, and let Visaura compile your perfect application package in minutes.
-            </p>
+                    <p class="text-lg sm:text-xl text-slate-600 leading-relaxed max-w-xl mb-10 font-medium">
+                        Empower your team with our AI-driven document ecosystem. We seamlessly assemble, verify, and streamline your entire visa application workflow in minutes.
+                    </p>
 
-            <div class="mt-10 flex flex-col items-center gap-4">
-                <button
-                    id="start-compile-btn"
-                    type="button"
-                    class="cta-btn inline-flex items-center justify-center gap-3 rounded-xl bg-trust-900 px-10 py-4 text-lg font-semibold text-white shadow-cta hover:shadow-cta-hover hover:bg-trust-700 min-w-[220px]"
-                >
-                    <span id="cta-label">Start Compile</span>
-                    <svg id="cta-arrow" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                    </svg>
-                </button>
-
-                <!-- Loading / Scan Animation -->
-                <div id="compile-loading" class="hidden flex-col items-center gap-4 mt-2">
-                    <div class="relative w-24 h-28 rounded-lg border-2 border-trust-200 bg-white shadow-sm overflow-hidden">
-                        <div class="absolute inset-x-3 top-3 space-y-2">
-                            <div class="h-1.5 w-3/4 rounded bg-slate-200"></div>
-                            <div class="h-1.5 w-full rounded bg-slate-100"></div>
-                            <div class="h-1.5 w-5/6 rounded bg-slate-100"></div>
-                            <div class="h-1.5 w-2/3 rounded bg-slate-100"></div>
+                    <div class="flex flex-col sm:flex-row items-center gap-5 w-full sm:w-auto">
+                        <a href="app.html" class="btn-primary w-full sm:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-brand-500 to-indigo-600 text-white font-bold text-base flex items-center justify-center gap-2">
+                            Start Free Trial
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </a>
+                        <a href="#demo" class="btn-secondary w-full sm:w-auto px-8 py-4 rounded-full glass-card border-slate-200 text-slate-800 font-bold text-base flex items-center justify-center gap-2 shadow-sm">
+                            <svg class="w-5 h-5 text-slate-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+                            Book a Demo
+                        </a>
+                    </div>
+                    
+                    <div class="mt-10 flex items-center gap-4 text-sm font-medium text-slate-500">
+                        <div class="flex -space-x-2">
+                            <img class="w-8 h-8 rounded-full border-2 border-white" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=64&h=64&q=80" alt="User avatar">
+                            <img class="w-8 h-8 rounded-full border-2 border-white" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=64&h=64&q=80" alt="User avatar">
+                            <img class="w-8 h-8 rounded-full border-2 border-white" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=64&h=64&q=80" alt="User avatar">
                         </div>
-                        <div class="scan-line absolute left-0 right-0 h-1 bg-trust-500 shadow-[0_0_12px_rgba(37,99,235,0.6)]"></div>
+                        <p>Trusted by 10,000+ modern teams</p>
                     </div>
-                    <div class="flex items-end gap-1 h-8">
-                        <div class="assemble-page w-5 h-7 rounded-sm bg-trust-100 border border-trust-200"></div>
-                        <div class="assemble-page w-5 h-7 rounded-sm bg-trust-200 border border-trust-300"></div>
-                        <div class="assemble-page w-5 h-7 rounded-sm bg-trust-300 border border-trust-400"></div>
+                </div>
+
+                <!-- Right Column: 3D / Floating Digital Ecosystem Illustration -->
+                <div class="relative w-full h-[500px] sm:h-[600px] flex items-center justify-center z-20">
+                    
+                    <!-- 3D CSS Spheres (Floating in space) -->
+                    <div class="absolute top-[10%] right-[15%] w-20 h-20 rounded-full animate-float-fast z-30" style="background: radial-gradient(circle at 30% 30%, #ffffff, #818cf8 50%, #4f46e5 100%); box-shadow: 0 15px 30px rgba(79, 70, 229, 0.4);"></div>
+                    
+                    <div class="absolute bottom-[20%] left-[5%] w-16 h-16 rounded-full animate-float-medium z-30" style="background: radial-gradient(circle at 30% 30%, #ffffff, #f472b6 50%, #db2777 100%); box-shadow: 0 15px 30px rgba(219, 39, 119, 0.3);"></div>
+                    
+                    <div class="absolute top-[40%] left-[-5%] w-12 h-12 rounded-full animate-float-slow z-30" style="background: radial-gradient(circle at 30% 30%, #ffffff, #34d399 50%, #059669 100%); box-shadow: 0 10px 20px rgba(5, 150, 105, 0.3);"></div>
+
+                    <!-- Main Center Illustration Canvas -->
+                    <div class="relative w-full max-w-md aspect-[4/5] sm:aspect-square bg-gradient-to-br from-white/40 to-white/10 rounded-[2.5rem] p-1 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] backdrop-blur-2xl border border-white/60 animate-float-medium z-20">
+                        <div class="w-full h-full bg-white/40 rounded-[2.25rem] overflow-hidden relative shadow-inner">
+                            <!-- Image representing 'diverse professionals' in a stylized way -->
+                            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover mix-blend-overlay opacity-90 scale-105" alt="Diverse professionals collaborating">
+                            
+                            <!-- Overlay Gradient for that premium feel -->
+                            <div class="absolute inset-0 bg-gradient-to-tr from-brand-900/80 via-indigo-800/40 to-transparent mix-blend-multiply"></div>
+                            
+                            <!-- UI Mockup Element inside main frame -->
+                            <div class="absolute bottom-6 left-6 right-6 p-5 glass-card rounded-2xl">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-800">Compilation Complete</p>
+                                        <p class="text-xs text-slate-500 font-medium">All documents verified</p>
+                                    </div>
+                                </div>
+                                <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                                    <div class="bg-gradient-to-r from-brand-500 to-indigo-500 w-full h-full rounded-full"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <p class="text-sm font-medium text-trust-700">Assembling your application package...</p>
+
+                    <!-- Floating Widget 1: Top Left -->
+                    <div class="absolute top-[5%] -left-[10%] sm:-left-[15%] w-56 glass-card rounded-2xl p-4 shadow-2xl animate-float-slow z-40">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Team Sync</span>
+                            <span class="flex h-2 w-2 rounded-full bg-emerald-400"></span>
+                        </div>
+                        <div class="flex -space-x-2 mb-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 border-2 border-white shadow-sm flex items-center justify-center text-[10px] font-bold text-blue-700">AK</div>
+                            <div class="w-8 h-8 rounded-full bg-pink-100 border-2 border-white shadow-sm flex items-center justify-center text-[10px] font-bold text-pink-700">MJ</div>
+                            <div class="w-8 h-8 rounded-full bg-amber-100 border-2 border-white shadow-sm flex items-center justify-center text-[10px] font-bold text-amber-700">+4</div>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-700">Collaborating live...</p>
+                    </div>
+
+                    <!-- Floating Widget 2: Bottom Right -->
+                    <div class="absolute bottom-[10%] -right-[5%] sm:-right-[10%] w-48 glass-card rounded-2xl p-4 shadow-2xl animate-float-fast z-40">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-800">Processing</p>
+                                <p class="text-[10px] text-slate-500">Ultra-fast AI</p>
+                            </div>
+                        </div>
+                        <div class="flex items-end gap-1.5 h-10 mt-3">
+                            <div class="w-full bg-indigo-200 rounded-t-sm h-[30%]"></div>
+                            <div class="w-full bg-indigo-300 rounded-t-sm h-[50%]"></div>
+                            <div class="w-full bg-indigo-400 rounded-t-sm h-[70%]"></div>
+                            <div class="w-full bg-indigo-500 rounded-t-sm h-[90%]"></div>
+                            <div class="w-full bg-brand-500 rounded-t-sm h-full relative">
+                                <div class="absolute -top-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-white shadow"></div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
-    </header>
-
-    <!-- Stepper (revealed after CTA) -->
-    <section id="how-it-works" class="hidden py-12 sm:py-16 bg-slate-50 border-y border-slate-200">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 fade-up">
-            <h2 class="text-2xl sm:text-3xl font-bold text-trust-900 text-center mb-2">How Visaura Works</h2>
-            <p class="text-slate-600 text-center mb-10">A clear path from upload to download — no guesswork.</p>
-
-            <div class="relative">
-                <div class="hidden sm:block absolute top-8 left-[12%] right-[12%] h-0.5 stepper-line rounded-full opacity-30"></div>
-                <ol id="stepper" class="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-4">
-                    <li class="flex flex-col items-center text-center">
-                        <div class="step-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white border-2 border-trust-900 text-trust-900 shadow-sm mb-3">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                        </div>
-                        <span class="text-xs font-semibold uppercase tracking-wider text-trust-700">Step 1</span>
-                        <span class="mt-1 font-semibold text-trust-900">Upload</span>
-                        <span class="mt-1 text-sm text-slate-500">Add your documents</span>
-                    </li>
-                    <li class="flex flex-col items-center text-center">
-                        <div class="step-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white border-2 border-slate-200 text-slate-400 shadow-sm mb-3">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                        </div>
-                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Step 2</span>
-                        <span class="mt-1 font-semibold text-slate-600">Review</span>
-                        <span class="mt-1 text-sm text-slate-500">Verify compliance</span>
-                    </li>
-                    <li class="flex flex-col items-center text-center">
-                        <div class="step-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white border-2 border-slate-200 text-slate-400 shadow-sm mb-3">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
-                        </div>
-                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Step 3</span>
-                        <span class="mt-1 font-semibold text-slate-600">Compile</span>
-                        <span class="mt-1 text-sm text-slate-500">AI assembles package</span>
-                    </li>
-                    <li class="flex flex-col items-center text-center">
-                        <div class="step-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white border-2 border-slate-200 text-slate-400 shadow-sm mb-3">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                        </div>
-                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Step 4</span>
-                        <span class="mt-1 font-semibold text-slate-600">Download</span>
-                        <span class="mt-1 text-sm text-slate-500">Get your packet</span>
-                    </li>
-                </ol>
-            </div>
-
-            <div class="mt-10 text-center">
-                <a
-                    id="continue-app-btn"
-                    href="app.html"
-                    class="cta-btn inline-flex items-center justify-center rounded-xl bg-trust-900 px-8 py-3.5 text-base font-semibold text-white shadow-cta hover:shadow-cta-hover hover:bg-trust-700"
-                >
-                    Continue to Application
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Value Proposition -->
-    <section id="features" class="py-16 sm:py-24">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-14">
-                <h2 class="text-2xl sm:text-3xl font-bold text-trust-900">Built for confidence</h2>
-                <p class="mt-3 text-slate-600 max-w-xl mx-auto">Everything you need to submit a compliant, polished visa application.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-                <article class="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md hover:border-trust-100 transition">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-trust-50 text-trust-700 mb-5">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-trust-900">AI-Verified Compliance</h3>
-                    <p class="mt-2 text-slate-600 leading-relaxed">Ensure your documents meet strict embassy standards.</p>
-                </article>
-
-                <article class="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md hover:border-trust-100 transition">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-trust-50 text-trust-700 mb-5">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-trust-900">Secure Storage</h3>
-                    <p class="mt-2 text-slate-600 leading-relaxed">End-to-end encryption for your sensitive data.</p>
-                </article>
-
-                <article class="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md hover:border-trust-100 transition">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-trust-50 text-trust-700 mb-5">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-trust-900">Automated Formatting</h3>
-                    <p class="mt-2 text-slate-600 leading-relaxed">Perfect, error-free document assembly.</p>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <!-- Trust Disclaimer -->
-    <section class="py-8 bg-slate-50 border-t border-slate-200">
-        <div class="max-w-3xl mx-auto px-4 text-center">
-            <p class="text-sm text-slate-500 flex items-center justify-center gap-2">
-                <svg class="w-4 h-4 text-trust-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                Visaura uses secure encryption. Your data is never shared with third parties.
-            </p>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="border-t border-slate-200 bg-white py-10">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-2">
-                <img src="logo.svg" alt="" class="h-7 w-auto opacity-80" aria-hidden="true" />
-                <span class="font-semibold text-trust-900">Visaura</span>
-            </div>
-            <nav class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-600">
-                <a href="about.html" class="hover:text-trust-700 transition">About</a>
-                <a href="privacy.html" class="hover:text-trust-700 transition">Privacy</a>
-                <a href="support.html" class="hover:text-trust-700 transition">Support</a>
-            </nav>
-            <p class="text-xs text-slate-400">&copy; 2026 Visaura. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <script>
-        const startCompileBtn = document.getElementById('start-compile-btn');
-        const compileLoading = document.getElementById('compile-loading');
-        const ctaLabel = document.getElementById('cta-label');
-        const ctaArrow = document.getElementById('cta-arrow');
-        const howItWorks = document.getElementById('how-it-works');
-        const stepIcons = document.querySelectorAll('.step-icon');
-
-        let isAnimating = false;
-
-        startCompileBtn.addEventListener('click', () => {
-            if (isAnimating) return;
-            isAnimating = true;
-
-            startCompileBtn.disabled = true;
-            startCompileBtn.classList.add('opacity-90', 'cursor-wait');
-            ctaArrow.classList.add('hidden');
-            ctaLabel.textContent = 'Preparing...';
-            compileLoading.classList.remove('hidden');
-            compileLoading.classList.add('flex');
-
-            setTimeout(() => {
-                howItWorks.classList.remove('hidden');
-                howItWorks.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-                animateStepper();
-
-                startCompileBtn.disabled = false;
-                startCompileBtn.classList.remove('opacity-90', 'cursor-wait');
-                ctaArrow.classList.remove('hidden');
-                ctaLabel.textContent = 'Start Compile';
-                compileLoading.classList.add('hidden');
-                compileLoading.classList.remove('flex');
-                isAnimating = false;
-            }, 2200);
-        });
-
-        function animateStepper() {
-            stepIcons.forEach((icon, index) => {
-                setTimeout(() => {
-                    icon.classList.remove('border-slate-200', 'text-slate-400');
-                    icon.classList.add('border-trust-900', 'text-trust-900', 'scale-105');
-                    setTimeout(() => icon.classList.remove('scale-105'), 300);
-                }, index * 400);
-            });
-        }
-    </script>
+    </main>
 </body>
 </html>

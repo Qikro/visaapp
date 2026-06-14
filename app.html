@@ -3,1548 +3,359 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>visaura - Visa Application Document Compiler</title>
+    <title>Visaura - Dashboard Sign In</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <style>
-        /* Custom focus styles for accessibility */
-        :focus-visible {
-            outline: 2px solid #60a5fa;
-            outline-offset: 2px;
-        }
-
-        /* Smooth transitions */
-        * {
-            transition-property: background-color, border-color, color, fill, stroke;
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-duration: 150ms;
-        }
-
-        /* Drag and drop styles */
-        .drag-over {
-            background-color: rgba(96, 165, 250, 0.1);
-            border-color: #60a5fa;
-        }
-
-        /* Document item animations */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .document-item {
-            animation: slideIn 0.3s ease-in-out;
-        }
-
-        /* Compilation progress animation */
-        @keyframes pulse-glow {
-            0%, 100% {
-                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
-            }
-            50% {
-                box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
-            }
-        }
-
-        .compiling {
-            animation: pulse-glow 1.5s infinite;
-        }
-
-        /* Modal card animations */
-        #review-modal-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        #review-modal-card.scale-100 {
-            transform: scale(1);
-            opacity: 1;
-        }
-
-        #review-modal-card.scale-95 {
-            transform: scale(0.95);
-            opacity: 0;
-        }
-    </style>
-</head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
-    <!-- Skip to main content link for accessibility -->
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-blue-500 focus:p-2 focus:rounded">
-        Skip to main content
-    </a>
-
-    <!-- Authentication Overlay -->
-    <div id="login-overlay" class="fixed inset-0 z-60 flex items-center justify-center bg-slate-950/95 backdrop-blur-sm transition-opacity duration-500">
-        <div class="w-full max-w-md rounded-3xl border border-slate-700 bg-slate-900/95 p-8 shadow-2xl">
-            <div class="mb-6 text-center">
-                <p class="text-sm uppercase tracking-[0.3em] text-slate-500">Secure Access</p>
-                <h1 id="auth-action-title" class="mt-4 text-3xl font-bold text-white">Sign in to continue</h1>
-                <p id="auth-action-description" class="mt-2 text-sm text-slate-400">Access your visa application dashboard.</p>
-            </div>
-            <div class="grid grid-cols-2 gap-3 mb-6">
-                <button id="auth-signin-toggle" class="py-3 rounded-2xl bg-slate-800 text-slate-100 font-semibold hover:bg-slate-700 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300">
-                    Sign In
-                </button>
-                <button id="auth-signup-toggle" class="py-3 rounded-2xl bg-blue-500 text-white font-semibold hover:bg-blue-600 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300">
-                    Sign Up
-                </button>
-            </div>
-            <div class="space-y-4">
-                <button id="auth-google-btn" class="w-full py-3 rounded-2xl bg-white text-[#3c4043] font-medium hover:bg-gray-50 transition flex items-center justify-center gap-3 border border-[#dadce0] shadow-sm font-[Roboto,Arial,sans-serif]">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" class="w-5 h-5" />
-                    Continue with Google
-                </button>
-                <button id="auth-github-btn" class="w-full py-3 rounded-2xl bg-slate-800 text-slate-100 font-semibold hover:bg-slate-700 transition flex items-center justify-center gap-2 border border-slate-700">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M12 .297a12 12 0 00-3.793 23.386c.6.111.82-.261.82-.579 0-.287-.01-1.045-.015-2.05-3.338.725-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.085 1.84 1.234 1.84 1.234 1.07 1.835 2.807 1.305 3.492.998.108-.775.418-1.305.762-1.605-2.665-.303-5.467-1.334-5.467-5.934 0-1.312.468-2.384 1.235-3.223-.123-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23a11.52 11.52 0 016.003 0c2.29-1.553 3.297-1.23 3.297-1.23.653 1.654.242 2.874.119 3.176.77.839 1.233 1.91 1.233 3.223 0 4.61-2.807 5.628-5.48 5.927.43.371.813 1.102.813 2.222 0 1.606-.014 2.898-.014 3.293 0 .32.218.694.825.576A12.003 12.003 0 0012 .297" />
-                    </svg>
-                    Continue with GitHub
-                </button>
-            </div>
-            <div class="mt-6 border-t border-slate-700 pt-6 space-y-4">
-                <label id="auth-name-label" class="block text-sm text-slate-300 hidden">
-                    <span class="font-medium">Full Name</span>
-                    <input id="auth-name" type="text" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" placeholder="Jane Doe" autocomplete="name" />
-                </label>
-                <label class="block text-sm text-slate-300">
-                    <span class="font-medium">Email address</span>
-                    <input id="login-email" type="email" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" placeholder="you@example.com" autocomplete="email" />
-                </label>
-                <label id="auth-password-label" class="block text-sm text-slate-300">
-                    <span class="font-medium">Password</span>
-                    <input id="login-password" type="password" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" placeholder="••••••••" autocomplete="current-password" />
-                </label>
-                <div id="forgot-password-container" class="text-right mt-1">
-                    <button id="forgot-password-link" type="button" class="text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none">Forgot Password?</button>
-                </div>
-                <label id="auth-confirm-password-label" class="block text-sm text-slate-300 hidden">
-                    <span class="font-medium">Confirm password</span>
-                    <input id="auth-confirm-password" type="password" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" placeholder="••••••••" autocomplete="new-password" />
-                </label>
-                <button id="auth-submit-btn" class="w-full py-3 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold hover:from-blue-600 hover:to-cyan-600 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300">
-                    Sign In
-                </button>
-                <p id="login-error" class="mt-3 text-sm text-red-400 hidden">Please enter your email and password.</p>
-                <p class="text-center text-sm text-slate-400">
-                    <span id="auth-footer-text">New here?</span>
-                    <button id="auth-mode-link" class="font-semibold text-blue-400 hover:text-blue-300 focus:outline-none">Create an account</button>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <main id="main-content" class="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-2xl mx-auto">
-            <!-- Header Section -->
-            <header class="mb-12 text-center">
-                <img src="logo.svg" alt="visaura logo" class="mx-auto mb-6 h-32 w-auto" />
-                <h1 class="text-4xl sm:text-5xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                    visaura - Visa Application Document Compiler
-                </h1>
-                <p class="text-slate-400 text-lg">
-                    Organize and compile your documents with ease
-                </p>
-                <div id="auth-status-bar" class="hidden mt-6 flex flex-col sm:flex-row sm:justify-center items-center gap-3 rounded-3xl border border-slate-700 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
-                    <span id="auth-status-text" class="font-medium"></span>
-                    <a href="index.html" class="rounded-full px-4 py-2 bg-slate-800 text-slate-100 hover:bg-slate-700 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300" title="Home">
-                        Home
-                    </a>
-                    <a id="admin-nav-btn" href="admin.html" class="hidden rounded-full px-4 py-2 bg-slate-800 text-slate-100 hover:bg-slate-700 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300" title="Admin Panel">
-                        Admin
-                    </a>
-                    <button id="sign-out-btn" class="rounded-full px-4 py-2 bg-slate-800 text-slate-100 hover:bg-slate-700 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300">
-                        Sign Out
-                    </button>
-                </div>
-            </header>
-
-            <!-- Main Form Card -->
-            <div class="bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-6 sm:p-8 space-y-8">
-                <!-- Visa Type Selection -->
-                <section aria-labelledby="visa-section">
-                    <label for="visa-type" id="visa-section" class="block text-sm font-semibold text-slate-100 mb-3">
-                        Select Visa Type
-                    </label>
-                    <select
-                        id="visa-type"
-                        class="w-full px-4 py-3 bg-slate-800 border border-slate-600 rounded-lg text-slate-100 font-medium focus-visible:border-blue-400 focus-visible:bg-slate-750 hover:border-slate-500 cursor-pointer"
-                        aria-describedby="visa-help"
-                    >
-                        <option value="">Choose a visa type...</option>
-                        <option value="digital-nomad">Digital Nomad Visa</option>
-                        <option value="freelance">Freelance Visa</option>
-                        <option value="d7">D7 Passive Income Visa</option>
-                    </select>
-                    <p id="visa-help" class="mt-2 text-sm text-slate-400">
-                        Select your visa category to see required documents
-                    </p>
-                </section>
-
-                <!-- Applicant Information -->
-                <section id="applicant-form-section" class="hidden" aria-labelledby="applicant-title">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 id="applicant-title" class="text-lg font-semibold text-slate-100">Applicant Information</h2>
-                        <p class="text-sm text-slate-400">Complete these fields before compiling</p>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <label class="block text-sm text-slate-300">
-                            <span class="font-medium">Full Name</span>
-                            <input id="applicant-name" type="text" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" placeholder="Jane Doe" />
-                        </label>
-                        <label class="block text-sm text-slate-300">
-                            <span class="font-medium">Email Address</span>
-                            <input id="applicant-email" type="email" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" placeholder="jane@example.com" />
-                        </label>
-                        <label class="block text-sm text-slate-300">
-                            <span class="font-medium">Passport Number</span>
-                            <input id="applicant-passport" type="text" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" placeholder="A12345678" />
-                        </label>
-                        <label class="block text-sm text-slate-300">
-                            <span class="font-medium">Nationality</span>
-                            <select id="applicant-nationality" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none">
-                                <option value="">Select nationality</option>
-                                <option value="United States">United States</option>
-                                <option value="United Kingdom">United Kingdom</option>
-                                <option value="Canada">Canada</option>
-                                <option value="Australia">Australia</option>
-                                <option value="India">India</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </label>
-                        <label class="block text-sm text-slate-300 sm:col-span-2">
-                            <span class="font-medium">Date of Birth</span>
-                            <input id="applicant-dob" type="date" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" />
-                        </label>
-                    </div>
-                </section>
-
-                <!-- ID Photo Upload & Validator -->
-                <section
-                    id="photo-section"
-                    class="hidden"
-                    aria-labelledby="photo-title"
-                >
-                    <h2 id="photo-title" class="text-lg font-semibold text-slate-100 mb-4 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                            <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" />
-                        </svg>
-                        ID Photo Upload & Validator
-                    </h2>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Upload & Preview Area -->
-                        <div>
-                            <!-- Photo Drop Zone -->
-                            <div
-                                id="photo-drop-zone"
-                                class="border-2 border-dashed border-slate-600 bg-slate-800 rounded-lg p-6 text-center cursor-pointer hover:border-slate-500 focus-visible:border-purple-400 transition mb-4"
-                                tabindex="0"
-                                role="button"
-                                aria-label="Upload photo area. Drag image here or click to select"
-                            >
-                                <svg class="w-10 h-10 mx-auto mb-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                </svg>
-                                <p class="text-slate-200 font-medium text-sm">Drop photo here</p>
-                                <p class="text-slate-400 text-xs mt-1">or <span class="text-purple-400 font-semibold">click to browse</span></p>
-                            </div>
-
-                            <!-- Hidden Photo Input -->
-                            <input
-                                type="file"
-                                id="photo-input"
-                                accept="image/jpeg,image/png,image/webp"
-                                class="hidden"
-                                aria-label="Photo file input"
-                            />
-
-                            <!-- Photo Preview -->
-                            <div
-                                id="photo-preview-container"
-                                class="hidden bg-gradient-to-b from-slate-800 to-slate-900 rounded-lg p-4 border border-slate-700"
-                            >
-                                <div class="relative bg-white rounded-md overflow-hidden flex items-center justify-center" style="aspect-ratio: 3/4;">
-                                    <img
-                                        id="photo-preview"
-                                        src=""
-                                        alt="ID photo preview"
-                                        class="w-full h-full object-cover"
-                                    />
-                                </div>
-                                <button
-                                    id="adjust-frame-btn"
-                                    class="w-full mt-3 py-2 px-3 bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-400"
-                                    aria-label="Adjust frame and crop photo"
-                                >
-                                    Adjust Frame
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Validation Checklist -->
-                        <div>
-                            <h3 class="text-sm font-semibold text-slate-100 mb-3">Photo Validation</h3>
-                            <div id="photo-validation-list" class="space-y-2">
-                                <!-- Validation items will be inserted here -->
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Document Checklist -->
-                <section
-                    id="checklist-section"
-                    class="hidden"
-                    aria-labelledby="checklist-title"
-                >
-                    <div class="flex items-center justify-between gap-3 mb-4">
-                        <h2 id="checklist-title" class="text-lg font-semibold text-slate-100 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M6.267 3.455a3 3 0 001.946-.806 3 3 0 00.254-4.75 3 3 0 003.207.5c.834-.608 1.42.164 1.527.805a4 4 0 002.861 2.861c.641.107 1.413.693 1.414 1.528a3 3 0 00.553 1.911 2.001 2.001 0 01.109-1.694 3 3 0 00-3.207-.5c-.834.608-1.42-.164-1.527-.805a4 4 0 00-2.861-2.86c-.641-.107-1.413-.693-1.414-1.528a3 3 0 00-.256-1.378zM12.32 15.773c-1.324.918-3.195.364-4.113-.96a3.005 3.005 0 00-4.38.55 3 3 0 003.207.5c.834-.608 1.42.164 1.527.805a4 4 0 002.861 2.861c.641.107 1.413.693 1.414 1.528a3 3 0 00.553 1.911 2.001 2.001 0 01.109-1.694 3 3 0 00.553-1.911 3.005 3.005 0 00-.256-1.378zM5.25 5.25a2 2 0 100 4 2 2 0 000-4zm0 10a2 2 0 100 4 2 2 0 000-4zm10-10a2 2 0 100 4 2 2 0 000-4zm0 10a2 2 0 100 4 2 2 0 000-4z" clip-rule="evenodd" />
-                            Required Documents
-                        </h2>
-                        <span id="checklist-progress" class="inline-flex items-center rounded-full bg-slate-800 border border-slate-700 px-3 py-1 text-xs font-semibold text-slate-300">
-                            0 / 0 completed
-                        </span>
-                    </div>
-
-                    <div id="document-list" class="space-y-3">
-                        <!-- Documents will be dynamically inserted here -->
-                    </div>
-                </section>
-
-                <!-- Upload Zone -->
-                <section aria-labelledby="upload-title" class="hidden" id="upload-section">
-                    <h3 id="upload-title" class="text-lg font-semibold text-slate-100 mb-4 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-cyan-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 1 1 0 100 2v3h3V5a1 1 0 100-2 2 2 0 00-2 2v3H4V5zm11 0a1 1 0 100 2v3h3V5a2 2 0 00-2-2 1 1 0 00-1 2v3h-3V5a1 1 0 100-2 2 2 0 00-2 2v3h3V5zm0 7a1 1 0 100 2 1 1 0 000-2zm2 1a2 2 0 11-4 0 2 2 0 014 0zm-9 1a1 1 0 100 2 1 1 0 000-2zm2 1a2 2 0 11-4 0 2 2 0 014 0zm7-6a1 1 0 100 2v3a1 1 0 100-2v-3z" clip-rule="evenodd" />
-                        </svg>
-                        Upload Documents
-                    </h3>
-
-                    <!-- Drag and Drop Area -->
-                    <div
-                        id="drop-zone"
-                        class="border-2 border-dashed border-slate-600 bg-slate-800 rounded-3xl p-8 text-center cursor-pointer hover:border-slate-500 focus-visible:border-blue-400 focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-                        tabindex="0"
-                        role="button"
-                        aria-label="Upload area. Drag files here or click to select files"
-                    >
-                        <p class="text-slate-200 text-lg font-medium mb-1">
-                            Drag and drop your PDF or JPEG files here
-                        </p>
-                        <p class="text-slate-400 text-sm">
-                            or <span class="text-blue-400 hover:text-blue-300 font-semibold">click to browse</span>
-                        </p>
-                    </div>
-
-                    <!-- Hidden File Input -->
-                    <input
-                        type="file"
-                        id="file-input"
-                        multiple
-                        accept=".pdf,.jpeg,.jpg"
-                        class="hidden"
-                        aria-label="File input for PDF or JPEG documents"
-                    />
-
-                    <!-- Uploaded Files List -->
-                    <div id="uploaded-files" class="mt-4 space-y-2">
-                        <!-- Uploaded files will be listed here -->
-                    </div>
-
-                    <!-- File Count -->
-                    <div id="file-count" class="mt-3 text-sm text-slate-400 hidden">
-                        <span id="file-counter">0</span> file(s) uploaded
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4">
-                        <button
-                            id="submit-btn"
-                            disabled
-                            class="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:from-slate-600 disabled:to-slate-600 disabled:cursor-not-allowed text-white font-bold rounded-2xl transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 flex items-center justify-center gap-2"
-                            aria-label="Compile documents"
-                        >
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a5 5 0 015 5v2a1 1 0 11-2 0v-2a3 3 0 00-3-3H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                            </svg>
-                            <span id="button-text">Compile Documents</span>
-                        </button>
-                        <button
-                            id="reset-btn"
-                            type="button"
-                            class="w-full py-4 px-6 border border-slate-700 text-slate-200 bg-slate-850 rounded-2xl hover:border-slate-500 hover:bg-slate-800 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400"
-                        >
-                            Reset Form
-                        </button>
-                    </div>
-                    <p id="validation-helper" class="mt-3 text-sm text-slate-400">
-                        Complete all applicant fields, select a visa, upload an ID photo, and add at least one document.
-                    </p>
-                </section>
-
-                <!-- Status Message -->
-                <div
-                    id="status-message"
-                    role="status"
-                    aria-live="polite"
-                    aria-atomic="true"
-                    class="hidden p-4 rounded-lg text-center"
-                >
-                    <!-- Status messages will be displayed here -->
-                </div>
-            </div>
-
-            <!-- Review Visa Packet Modal Overlay -->
-            <div
-                id="review-modal-overlay"
-                class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 opacity-0 transition-opacity duration-300"
-                role="dialog"
-                aria-labelledby="modal-title"
-                aria-hidden="true"
-            >
-                <!-- Modal Card -->
-                <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="review-modal-card">
-                    <!-- Modal Header -->
-                    <div class="sticky top-0 bg-gradient-to-r from-blue-600 to-cyan-600 px-6 py-5 border-b border-slate-700">
-                        <h2 id="modal-title" class="text-2xl font-bold text-white flex items-center gap-2">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M6.267 3.455a3 3 0 001.946-.806 3 3 0 00.254-4.75 3 3 0 003.207.5c.834-.608 1.42.164 1.527.805a4 4 0 002.861 2.861c.641.107 1.413.693 1.414 1.528a3 3 0 00.553 1.911 2.001 2.001 0 01.109-1.694 3 3 0 00-3.207-.5c-.834.608-1.42-.164-1.527-.805a4 4 0 00-2.861-2.86c-.641-.107-1.413-.693-1.414-1.528a3 3 0 00-.256-1.378zM12.32 15.773c-1.324.918-3.195.364-4.113-.96a3.005 3.005 0 00-4.38.55 3 3 0 003.207.5c.834-.608 1.42.164 1.527.805a4 4 0 002.861 2.861c.641.107 1.413.693 1.414 1.528a3 3 0 00.553 1.911 2.001 2.001 0 01.109-1.694 3 3 0 00.553-1.911 3.005 3.005 0 00-.256-1.378zM5.25 5.25a2 2 0 100 4 2 2 0 000-4zm0 10a2 2 0 100 4 2 2 0 000-4zm10-10a2 2 0 100 4 2 2 0 000-4zm0 10a2 2 0 100 4 2 2 0 000-4z" clip-rule="evenodd" />
-                            </svg>
-                            Review Your Visa Packet
-                        </h2>
-                    </div>
-
-                    <!-- Modal Content -->
-                    <div class="p-6 space-y-6">
-                        <!-- Visa Type Section -->
-                        <div>
-                            <h3 class="text-sm font-semibold text-slate-300 uppercase tracking-wide mb-2">Visa Type</h3>
-                            <div class="bg-slate-800 border border-slate-700 rounded-lg p-4">
-                                <p id="modal-visa-type" class="text-lg font-semibold text-blue-400">—</p>
-                            </div>
-                        </div>
-
-                        <!-- Files Section -->
-                        <div>
-                            <h3 class="text-sm font-semibold text-slate-300 uppercase tracking-wide mb-2">Attached Documents</h3>
-                            <div id="modal-files-list" class="bg-slate-800 border border-slate-700 rounded-lg p-4 space-y-2 max-h-48 overflow-y-auto">
-                                <!-- File list will be inserted here -->
-                            </div>
-                        </div>
-
-                        <!-- Applicant Summary -->
-                        <div>
-                            <h3 class="text-sm font-semibold text-slate-300 uppercase tracking-wide mb-2">Applicant Summary</h3>
-                            <div id="modal-applicant-summary" class="bg-slate-800 border border-slate-700 rounded-lg p-4 space-y-3 text-slate-200 text-sm">
-                                <p><span class="font-semibold text-slate-300">Name:</span> —</p>
-                                <p><span class="font-semibold text-slate-300">Email:</span> —</p>
-                                <p><span class="font-semibold text-slate-300">Passport:</span> —</p>
-                                <p><span class="font-semibold text-slate-300">Nationality:</span> —</p>
-                                <p><span class="font-semibold text-slate-300">Date of Birth:</span> —</p>
-                            </div>
-                        </div>
-
-                        <!-- ID Photo Section -->
-                        <div>
-                            <h3 class="text-sm font-semibold text-slate-300 uppercase tracking-wide mb-2">ID Photo</h3>
-                            <div id="modal-photo-preview" class="bg-slate-800 border border-slate-700 rounded-lg p-4 flex items-center justify-center">
-                                <div class="text-center text-slate-500">
-                                    <svg class="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    <p class="text-sm">No photo uploaded</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Modal Footer -->
-                    <div class="sticky bottom-0 bg-slate-800 border-t border-slate-700 px-6 py-4 flex gap-3">
-                        <button
-                            id="modal-go-back-btn"
-                            class="flex-1 py-3 px-4 bg-slate-700 hover:bg-slate-600 text-slate-100 font-semibold rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500"
-                            aria-label="Go back and edit"
-                        >
-                            Go Back
-                        </button>
-                        <button
-                            id="modal-confirm-btn"
-                            class="flex-1 py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold rounded-lg transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 flex items-center justify-center gap-2"
-                            aria-label="Confirm and assemble documents"
-                        >
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                            </svg>
-                            Confirm & Assemble
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Payment Checkout Modal -->
-            <div
-                id="payment-modal-overlay"
-                class="hidden fixed inset-0 bg-slate-950/90 flex items-center justify-center z-50 p-4 opacity-0 transition-opacity duration-300"
-                role="dialog"
-                aria-labelledby="payment-title"
-                aria-hidden="true"
-            >
-                <div class="bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl max-w-xl w-full max-h-[92vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="payment-modal-card">
-                    <div class="sticky top-0 bg-slate-950 px-6 py-5 border-b border-slate-700">
-                        <h2 id="payment-title" class="text-2xl font-bold text-white">Secure Checkout</h2>
-                        <p class="text-sm text-slate-400 mt-1">Visa Application Processing Fee</p>
-                    </div>
-                    <div class="p-6 space-y-6">
-                        <div class="rounded-3xl border border-slate-700 bg-slate-900 p-5">
-                            <div class="flex items-center justify-between text-slate-300 mb-3">
-                                <span class="font-medium">Processing fee</span>
-                                <span class="text-white font-semibold">$10.00</span>
-                            </div>
-                            <p class="text-sm text-slate-500">You will be redirected to Stripe Checkout to complete payment securely.</p>
-                        </div>
-
-                        <div class="rounded-3xl border border-slate-700 bg-slate-900 p-5">
-                            <label class="block text-sm text-slate-300">
-                                <span class="font-medium">Email</span>
-                                <input id="payment-email" type="email" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" placeholder="you@example.com" />
-                            </label>
-                        </div>
-
-                        <button
-                            id="payment-pay-btn"
-                            class="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 flex items-center justify-center gap-3"
-                        >
-                            <svg id="payment-spinner" class="w-5 h-5 hidden animate-spin" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                            </svg>
-                            <span id="payment-pay-text">Pay $10.00</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-            <!-- Info Section -->
-            <footer class="mt-12 text-center text-slate-400 text-sm">
-                <p>
-                    Securely compile your visa application documents in one place.
-                    <br />
-                    No data is stored on our servers.
-                </p>
-            </footer>
-        </div>
-    </main>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
     <script>
-        // Photo validation checklist items
-        const photoValidationItems = [
-            { id: 'background', label: 'Plain White Background', completed: false },
-            { id: 'clarity', label: 'Facial Clarity Verified', completed: false },
-            { id: 'dimensions', label: 'Correct Biometric Dimensions', completed: false }
-        ];
-    </script>
-    <script>
-        // Document requirements for each visa type
-        const documentRequirements = {
-            'digital-nomad': [
-                'Valid Passport (copy)',
-                'Proof of Income',
-                'Bank Statements (last 3 months)',
-                'Travel Health Insurance',
-                'Criminal Record Certificate',
-                'Employment Contract or Bank Statements'
-            ],
-            'freelance': [
-                'Valid Passport (copy)',
-                'Proof of Self-Employment',
-                'Tax Returns (last 2 years)',
-                'Bank Statements (last 6 months)',
-                'Professional Portfolio',
-                'Travel Health Insurance',
-                'Criminal Record Certificate'
-            ],
-            'd7': [
-                'Valid Passport (copy)',
-                'Proof of Passive Income',
-                'Bank Statements (last 12 months)',
-                'Rental Income Documentation',
-                'Investment Statements',
-                'Property Deed (if applicable)',
-                'Criminal Record Certificate',
-                'Travel Health Insurance'
-            ]
-        };
-
-        // DOM Elements
-        const visaTypeSelect = document.getElementById('visa-type');
-        const checklistSection = document.getElementById('checklist-section');
-        const uploadSection = document.getElementById('upload-section');
-        const photoSection = document.getElementById('photo-section');
-        const documentList = document.getElementById('document-list');
-        const dropZone = document.getElementById('drop-zone');
-        const fileInput = document.getElementById('file-input');
-        const uploadedFiles = document.getElementById('uploaded-files');
-        const fileCount = document.getElementById('file-count');
-        const fileCounter = document.getElementById('file-counter');
-        const submitBtn = document.getElementById('submit-btn');
-        const statusMessage = document.getElementById('status-message');
-        const buttonText = document.getElementById('button-text');
-
-        // Photo-related DOM elements
-        const photoDropZone = document.getElementById('photo-drop-zone');
-        const photoInput = document.getElementById('photo-input');
-        const photoPreview = document.getElementById('photo-preview');
-        const photoPreviewContainer = document.getElementById('photo-preview-container');
-        const photoValidationList = document.getElementById('photo-validation-list');
-        const adjustFrameBtn = document.getElementById('adjust-frame-btn');
-
-        // Modal-related DOM elements
-        const reviewModalOverlay = document.getElementById('review-modal-overlay');
-        const reviewModalCard = document.getElementById('review-modal-card');
-        const modalVisaType = document.getElementById('modal-visa-type');
-        const modalFilesList = document.getElementById('modal-files-list');
-        const modalApplicantSummary = document.getElementById('modal-applicant-summary');
-        const modalPhotoPreview = document.getElementById('modal-photo-preview');
-        const modalGoBackBtn = document.getElementById('modal-go-back-btn');
-        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
-
-        const paymentModalOverlay = document.getElementById('payment-modal-overlay');
-        const paymentModalCard = document.getElementById('payment-modal-card');
-        const paymentPayBtn = document.getElementById('payment-pay-btn');
-        const paymentSpinner = document.getElementById('payment-spinner');
-        const paymentEmailInput = document.getElementById('payment-email');
-
-        const applicantFormSection = document.getElementById('applicant-form-section');
-        const applicantNameInput = document.getElementById('applicant-name');
-        const applicantEmailInput = document.getElementById('applicant-email');
-        const applicantPassportInput = document.getElementById('applicant-passport');
-        const applicantNationalitySelect = document.getElementById('applicant-nationality');
-        const applicantDobInput = document.getElementById('applicant-dob');
-        const resetBtn = document.getElementById('reset-btn');
-        const validationHelper = document.getElementById('validation-helper');
-
-        const loginOverlay = document.getElementById('login-overlay');
-        const loginEmailInput = document.getElementById('login-email');
-        const loginPasswordInput = document.getElementById('login-password');
-        const authNameInput = document.getElementById('auth-name');
-        const authConfirmPasswordInput = document.getElementById('auth-confirm-password');
-        const authSigninToggle = document.getElementById('auth-signin-toggle');
-        const authSignupToggle = document.getElementById('auth-signup-toggle');
-        const authModeLink = document.getElementById('auth-mode-link');
-        const authGoogleBtn = document.getElementById('auth-google-btn');
-        const authGithubBtn = document.getElementById('auth-github-btn');
-        const authSubmitBtn = document.getElementById('auth-submit-btn');
-        const authActionTitle = document.getElementById('auth-action-title');
-        const authActionDescription = document.getElementById('auth-action-description');
-        const authFooterText = document.getElementById('auth-footer-text');
-        const authNameLabel = document.getElementById('auth-name-label');
-        const authConfirmPasswordLabel = document.getElementById('auth-confirm-password-label');
-        const authStatusBar = document.getElementById('auth-status-bar');
-        const authStatusText = document.getElementById('auth-status-text');
-        const signOutBtn = document.getElementById('sign-out-btn');
-        const loginErrorMessage = document.getElementById('login-error');
-
-        let uploadedFilesList = [];
-        let uploadedPhotoFile = null;
-        let isModalOpen = false;
-        let currentApplicationId = null;
-        let isSignUpMode = false;
-        let isForgotPasswordMode = false;
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyChDSgZ8cuNlDU1WKaN0I5pX70-BSV_elQ",
-            authDomain: "visora-dc4fb.firebaseapp.com",
-            projectId: "visora-dc4fb",
-            storageBucket: "visora-dc4fb.firebasestorage.app",
-            messagingSenderId: "1057790753782",
-            appId: "1:1057790753782:web:1b83fc57821b3b23f265d7",
-            measurementId: "G-HHGQTY3MTW"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        
-        // Enforce compulsory sign-in on fresh entry
-        auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
-
-        const googleProvider = new firebase.auth.GoogleAuthProvider();
-        const githubProvider = new firebase.auth.GithubAuthProvider();
-        const isAuthEnvSupported = ['http:', 'https:', 'chrome-extension:'].includes(location.protocol);
-
-        // ============= PHOTO UPLOAD & VALIDATION =============
-
-        // Display photo validation checklist
-        function displayPhotoValidation() {
-            photoValidationList.innerHTML = '';
-
-            photoValidationItems.forEach((item) => {
-                const validationItem = document.createElement('div');
-                validationItem.className = 'flex items-center gap-3 p-3 bg-slate-800 rounded-lg hover:bg-slate-750 transition';
-
-                const isCompleted = item.completed;
-                const checkmarkColor = isCompleted ? 'text-emerald-400' : 'text-slate-500';
-                const itemOpacity = isCompleted ? '' : 'opacity-60';
-
-                validationItem.innerHTML = `
-                    <svg class="w-5 h-5 ${checkmarkColor} flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                    </svg>
-                    <span class="text-slate-200 text-sm font-medium ${itemOpacity}">${item.label}</span>
-                `;
-
-                photoValidationList.appendChild(validationItem);
-            });
-        }
-
-        // Handle photo file and display preview
-        function handlePhotoFile(file) {
-            if (!file) return;
-
-            // Validate file type
-            const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
-            if (!validTypes.includes(file.type)) {
-                showStatus('Only JPEG, PNG, or WebP images are allowed', 'error');
-                return;
-            }
-
-            uploadedPhotoFile = file;
-
-            // Create preview
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                photoPreview.src = e.target.result;
-                photoPreviewContainer.classList.remove('hidden');
-
-                // Simulate validation checks
-                simulatePhotoValidation();
-                updateSubmitButton();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // Simulate photo validation checks
-        function simulatePhotoValidation() {
-            photoValidationItems.forEach((item) => {
-                item.completed = false;
-            });
-
-            // Simulate validation with delays
-            setTimeout(() => {
-                photoValidationItems[0].completed = true;
-                displayPhotoValidation();
-            }, 600);
-
-            setTimeout(() => {
-                photoValidationItems[1].completed = true;
-                displayPhotoValidation();
-            }, 1200);
-
-            setTimeout(() => {
-                photoValidationItems[2].completed = true;
-                displayPhotoValidation();
-            }, 1800);
-        }
-
-        // Photo drop zone handlers
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            photoDropZone.addEventListener(eventName, preventDefaults, false);
-        });
-
-        ['dragenter', 'dragover'].forEach(eventName => {
-            photoDropZone.addEventListener(eventName, () => {
-                photoDropZone.classList.add('border-purple-400', 'bg-purple-950');
-            }, false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            photoDropZone.addEventListener(eventName, () => {
-                photoDropZone.classList.remove('border-purple-400', 'bg-purple-950');
-            }, false);
-        });
-
-        photoDropZone.addEventListener('drop', (e) => {
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handlePhotoFile(files[0]);
-            }
-        });
-
-        // Click to upload photo
-        photoDropZone.addEventListener('click', () => photoInput.click());
-        photoDropZone.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                photoInput.click();
-            }
-        });
-
-        photoInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handlePhotoFile(e.target.files[0]);
-            }
-        });
-
-        [applicantNameInput, applicantEmailInput, applicantPassportInput, applicantNationalitySelect, applicantDobInput].forEach((field) => {
-            field.addEventListener('input', updateSubmitButton);
-        });
-
-        resetBtn.addEventListener('click', resetForm);
-        authSubmitBtn.addEventListener('click', handleAuthSubmit);
-        [loginEmailInput, loginPasswordInput, authNameInput, authConfirmPasswordInput].forEach((field) => {
-            if (!field) return;
-            field.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    handleAuthSubmit();
-                }
-            });
-        });
-
-        authSigninToggle.addEventListener('click', () => setAuthMode(false));
-        authSignupToggle.addEventListener('click', () => setAuthMode(true));
-        authModeLink.addEventListener('click', () => {
-            if (isForgotPasswordMode) {
-                setAuthMode(false);
-            } else {
-                setAuthMode(!isSignUpMode);
-            }
-        });
-        document.getElementById('forgot-password-link').addEventListener('click', setForgotPasswordMode);
-        authGoogleBtn.addEventListener('click', () => handleOAuthSignUp('Google'));
-        authGithubBtn.addEventListener('click', () => handleOAuthSignUp('GitHub')); 
-        paymentPayBtn.addEventListener('click', handlePaymentSubmit); 
-
-        // Adjust Frame button - simulate cropping tool
-        adjustFrameBtn.addEventListener('click', () => {
-            adjustFrameBtn.classList.add('scale-95');
-            adjustFrameBtn.textContent = 'Frame Adjusted!';
-
-            setTimeout(() => {
-                adjustFrameBtn.classList.remove('scale-95');
-                adjustFrameBtn.textContent = 'Adjust Frame';
-            }, 1000);
-        });
-
-        // ============= END PHOTO UPLOAD & VALIDATION =============
-
-        // ============= REVIEW MODAL =============
-
-        // Show review modal with packet details
-        function showReviewModal() {
-            // Populate visa type
-            const selectedVisaOption = visaTypeSelect.options[visaTypeSelect.selectedIndex];
-            modalVisaType.textContent = selectedVisaOption.text;
-
-            // Populate files list
-            modalFilesList.innerHTML = '';
-            if (uploadedFilesList.length === 0) {
-                modalFilesList.innerHTML = '<p class="text-slate-400 text-sm">No files uploaded</p>';
-            } else {
-                uploadedFilesList.forEach((file) => {
-                    const fileItem = document.createElement('div');
-                    fileItem.className = 'flex items-center gap-2 text-slate-200 text-sm py-2 px-3 bg-slate-700 rounded';
-                    fileItem.innerHTML = `
-                        <svg class="w-4 h-4 text-blue-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                            <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" />
-                        </svg>
-                        <span class="truncate font-medium">${file.name}</span>
-                    `;
-                    modalFilesList.appendChild(fileItem);
-                });
-            }
-
-            // Populate applicant summary
-            const applicantName = applicantNameInput.value.trim() || '—';
-            const applicantEmail = applicantEmailInput.value.trim() || '—';
-            const applicantPassport = applicantPassportInput.value.trim() || '—';
-            const applicantNationality = applicantNationalitySelect.value.trim() || '—';
-            const applicantDob = applicantDobInput.value ? new Date(applicantDobInput.value).toLocaleDateString() : '—';
-
-            modalApplicantSummary.innerHTML = `
-                <p><span class="font-semibold text-slate-300">Name:</span> ${applicantName}</p>
-                <p><span class="font-semibold text-slate-300">Email:</span> ${applicantEmail}</p>
-                <p><span class="font-semibold text-slate-300">Passport:</span> ${applicantPassport}</p>
-                <p><span class="font-semibold text-slate-300">Nationality:</span> ${applicantNationality}</p>
-                <p><span class="font-semibold text-slate-300">Date of Birth:</span> ${applicantDob}</p>
-            `;
-
-            // Populate photo preview
-            if (uploadedPhotoFile && photoPreview.src) {
-                modalPhotoPreview.innerHTML = `
-                    <div class="relative w-full h-auto" style="aspect-ratio: 3/4;">
-                        <img src="${photoPreview.src}" alt="ID photo" class="w-full h-full object-cover rounded-lg" />
-                    </div>
-                `;
-            } else {
-                modalPhotoPreview.innerHTML = `
-                    <div class="text-center text-slate-500 py-8">
-                        <svg class="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <p class="text-sm">No photo uploaded</p>
-                    </div>
-                `;
-            }
-
-            // Show modal with animations
-            reviewModalOverlay.classList.remove('hidden');
-            isModalOpen = true;
-            
-            // Trigger fade-in animation
-            requestAnimationFrame(() => {
-                reviewModalOverlay.classList.remove('opacity-0');
-                reviewModalCard.classList.remove('scale-95', 'opacity-0');
-                reviewModalCard.classList.add('scale-100', 'opacity-100');
-            });
-        }
-
-        // Close review modal
-        function closeReviewModal() {
-            reviewModalOverlay.classList.add('opacity-0');
-            reviewModalCard.classList.remove('scale-100', 'opacity-100');
-            reviewModalCard.classList.add('scale-95', 'opacity-0');
-
-            setTimeout(() => {
-                reviewModalOverlay.classList.add('hidden');
-                isModalOpen = false;
-            }, 300);
-        }
-
-        function openPaymentModal() {
-            paymentModalOverlay.classList.remove('hidden');
-            requestAnimationFrame(() => {
-                paymentModalOverlay.classList.remove('opacity-0');
-                paymentModalCard.classList.remove('scale-95', 'opacity-0');
-                paymentModalCard.classList.add('scale-100', 'opacity-100');
-                if (paymentEmailInput) {
-                    paymentEmailInput.value = applicantEmailInput?.value.trim() || loginEmailInput?.value.trim() || '';
-                }
-            });
-        }
-
-        function closePaymentModal() {
-            paymentModalOverlay.classList.add('opacity-0');
-            paymentModalCard.classList.remove('scale-100', 'opacity-100');
-            paymentModalCard.classList.add('scale-95', 'opacity-0');
-
-            setTimeout(() => {
-                paymentModalOverlay.classList.add('hidden');
-            }, 300);
-        }
-
-        async function handlePaymentSubmit() { 
-            if (!currentApplicationId) {
-                showStatus('Application ID is missing. Please restart the process.', 'error');
-                return;
-            }
-            
-            paymentPayBtn.disabled = true;
-            paymentSpinner.classList.remove('hidden');
-            paymentPayBtn.querySelector('span').textContent = 'Initializing...';
-            
-            const email = (paymentEmailInput?.value.trim() || applicantEmailInput?.value.trim() || loginEmailInput?.value.trim()) || undefined;
-            
-            try {
-                const response = await fetch('/initiate-payment', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ applicationId: currentApplicationId, email: email })
-                });
-                
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data.error || 'Unable to initiate payment.');
-                }
-                
-                triggerPaytmCheckout(data);
-                
-            } catch (error) {
-                paymentSpinner.classList.add('hidden');
-                paymentPayBtn.querySelector('span').textContent = 'Pay $10.00';
-                paymentPayBtn.disabled = false;
-                showStatus(error.message || 'Payment failed. Please try again.', 'error');
-            }
-        }
-
-        function triggerPaytmCheckout(data) {
-            const config = {
-                "root": "",
-                "flow": "DEFAULT",
-                "data": {
-                    "orderId": data.orderId,
-                    "token": data.txnToken,
-                    "tokenType": "TXN_TOKEN",
-                    "amount": data.amount
-                },
-                "handler": {
-                    "transactionStatus": function(paymentStatus) {
-                        closePaymentModal();
-                        if (paymentStatus.STATUS === 'TXN_SUCCESS') {
-                            showStatus('Payment processed. Verifying with server...', 'success');
-                            pollPaymentStatus(data.orderId);
-                        } else {
-                            showStatus('Payment failed or was canceled. Please try again.', 'error');
-                            paymentSpinner.classList.add('hidden');
-                            paymentPayBtn.querySelector('span').textContent = 'Pay $10.00';
-                            paymentPayBtn.disabled = false;
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sapphire: '#0a192f',
+                            midnight: '#020617',
+                            gold: '#d4af37',
+                            goldLight: '#f3e5ab',
+                            goldDark: '#aa8c2c',
+                            silver: '#e2e8f0',
+                        }
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'sapphire-gradient': 'linear-gradient(135deg, #0a192f 0%, #020617 100%)',
+                        'gold-gradient': 'linear-gradient(to right, #aa8c2c, #d4af37, #f3e5ab, #d4af37, #aa8c2c)',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'shimmer': 'shimmer 3s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'particles': 'particleDrift 20s linear infinite',
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        particleDrift: {
+                            '0%': { transform: 'translateY(0) translateX(0)' },
+                            '100%': { transform: 'translateY(-100vh) translateX(50vw)' },
                         }
                     }
                 }
-            };
-
-            if (window.Paytm && window.Paytm.CheckoutJS) {
-                window.Paytm.CheckoutJS.init(config).then(() => window.Paytm.CheckoutJS.invoke());
-            } else {
-                const script = document.createElement('script');
-                script.src = `https://securegw-stage.paytm.in/merchantpgpui/checkoutjs/merchants/${data.mid}.js`;
-                script.onload = () => window.Paytm.CheckoutJS.init(config).then(() => window.Paytm.CheckoutJS.invoke());
-                document.body.appendChild(script);
             }
+        };
+    </script>
+    <style>
+        body {
+            background-color: #020617; /* Midnight */
+            color: #e2e8f0; /* Silver */
+            overflow: hidden;
         }
 
-        function pollPaymentStatus(orderId, retries = 10, delay = 2000) {
-            if (retries <= 0) {
-                showStatus('Could not verify payment status. Please contact support.', 'error');
-                return;
-            }
-            setTimeout(async () => {
-                const response = await fetch(`/payment-status?applicationId=${orderId}`);
-                const data = await response.json();
-                if (data.status === 'completed') {
-                    finalizePaymentSuccess();
-                } else {
-                    pollPaymentStatus(orderId, retries - 1, delay);
-                }
-            }, delay);
+        /* Ambient Background Effects */
+        .ambient-glow {
+            position: absolute;
+            width: 80vw;
+            height: 80vh;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, rgba(10, 25, 47, 0) 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
         }
 
-        function finalizePaymentSuccess() {
-            submitBtn.disabled = false;
-            submitBtn.classList.remove('compiling', 'from-blue-500', 'to-cyan-500', 'hover:from-blue-600', 'hover:to-cyan-600');
-            submitBtn.classList.add('bg-emerald-500', 'hover:bg-emerald-400', 'download-ready');
-            buttonText.textContent = 'Success! Download Packet';
-            showStatus('Payment successful, your packet is ready for download.', 'success');
-            recordPaymentOnServer().catch((error) => console.error('Failed to record payment:', error));
+        /* Abstract Particles (CSS purely) */
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(212, 175, 55, 0.4);
+            border-radius: 50%;
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.8);
+            pointer-events: none;
+            z-index: 1;
         }
 
-        async function recordPaymentOnServer() {
-            const email = (applicantEmailInput?.value.trim() || paymentEmailInput?.value.trim() || loginEmailInput?.value.trim());
-            if (!email) return;
-
-            await fetch('/record-payment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email,
-                    amount: 1000, // Amount in cents
-                    stripeSessionId: null // No longer a stripe session
-                })
-            });
+        /* Glassmorphism Panel */
+        .glass-panel {
+            background: rgba(10, 25, 47, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7), 0 0 20px rgba(212, 175, 55, 0.05) inset;
         }
 
-        async function submitApplicationToServer() {
-            const response = await fetch('/submit-application', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: applicantNameInput.value.trim(),
-                    email: applicantEmailInput.value.trim(),
-                    visaType: visaTypeSelect.value,
-                    files: uploadedFilesList.map((file) => file.name),
-                    photoFile: uploadedPhotoFile ? uploadedPhotoFile.name : null
-                })
-            });
-
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.error || 'Unable to submit application.');
-            }
-
-            return data.applicationId;
+        /* Input fields with integrated icons */
+        .premium-input-container {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .premium-input-container:focus-within {
+            box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.5);
+            border-radius: 0.75rem;
         }
 
-        function setForgotPasswordMode() {
-            isForgotPasswordMode = true;
-            isSignUpMode = false;
-            authActionTitle.textContent = 'Reset your password';
-            authActionDescription.textContent = 'Enter your email to receive a reset link, or sign in below.';
+        .premium-input {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .premium-input:focus {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(212, 175, 55, 0.5);
+            outline: none;
+        }
+
+        /* Gold Gradient Text */
+        .text-gold-gradient {
+            background: linear-gradient(to right, #f3e5ab, #d4af37, #aa8c2c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Animated Primary Button */
+        .btn-gold-pulse {
+            background: linear-gradient(135deg, #0a192f 0%, #aa8c2c 100%);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .btn-gold-pulse::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, #0a192f 0%, #d4af37 100%);
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-gold-pulse:hover::before {
+            opacity: 1;
+        }
+        
+        .btn-gold-pulse:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-gold-pulse::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+            transform: rotate(30deg);
+            animation: shimmer 4s infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Machined Metal Button (OAuth) */
+        .btn-metal {
+            background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-metal:hover {
+            background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%);
+            border-color: rgba(212, 175, 55, 0.3);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="flex min-h-screen bg-sapphire-gradient font-sans relative">
+
+    <!-- Background Elements -->
+    <div class="ambient-glow"></div>
+    
+    <!-- CSS Particles Generator via Script -->
+    <div id="particle-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
+
+    <div class="flex w-full h-screen z-10 relative">
+        
+        <!-- Left Panel: Aesthetic Showcase -->
+        <div class="hidden lg:flex w-1/2 flex-col justify-center items-center p-16 relative overflow-hidden">
             
-            authNameLabel.classList.add('hidden');
-            document.getElementById('auth-password-label').classList.add('hidden');
-            authConfirmPasswordLabel.classList.add('hidden');
-            document.getElementById('forgot-password-container').classList.add('hidden');
-            
-            authSigninToggle.classList.add('hidden');
-            authSignupToggle.classList.add('hidden');
-            
-            authSubmitBtn.textContent = 'Send Reset Link';
-            
-            authFooterText.textContent = 'Remembered your password?';
-            authModeLink.textContent = 'Sign in instead';
-            loginErrorMessage.classList.add('hidden');
-        }
-
-        function setAuthMode(signUp) {
-            isForgotPasswordMode = false;
-            isSignUpMode = signUp;
-            
-            authSigninToggle.classList.remove('hidden');
-            authSignupToggle.classList.remove('hidden');
-            document.getElementById('auth-password-label').classList.remove('hidden');
-            document.getElementById('forgot-password-container').classList.toggle('hidden', signUp);
-
-            authNameLabel.classList.toggle('hidden', !signUp);
-            authConfirmPasswordLabel.classList.toggle('hidden', !signUp);
-            authSigninToggle.classList.toggle('bg-blue-500', !signUp);
-            authSigninToggle.classList.toggle('bg-slate-800', signUp);
-            authSignupToggle.classList.toggle('bg-blue-500', signUp);
-            authSignupToggle.classList.toggle('bg-slate-800', !signUp);
-            authActionTitle.textContent = signUp ? 'Create your account' : 'Sign in to continue';
-            authActionDescription.textContent = signUp ? 'Use your email or social account to sign up.' : 'Access your visa application dashboard.';
-            authSubmitBtn.textContent = signUp ? 'Sign Up' : 'Sign In';
-            authFooterText.textContent = signUp ? 'Already have an account?' : 'New here?';
-            authModeLink.textContent = signUp ? 'Sign in instead' : 'Create an account';
-            loginErrorMessage.classList.add('hidden');
-        }
-
-        async function handleAuthSubmit() {
-            loginErrorMessage.classList.add('hidden');
-            const email = loginEmailInput.value.trim();
-            const password = loginPasswordInput.value.trim();
-            const name = authNameInput?.value.trim();
-            const confirmPassword = authConfirmPasswordInput?.value.trim();
-
-            if (!isAuthEnvSupported) {
-                loginErrorMessage.textContent = 'Firebase auth requires a local server or HTTPS origin. Please run this app from http://localhost or a deployed URL.';
-                loginErrorMessage.classList.remove('hidden');
-                return;
-            }
-
-            if (isForgotPasswordMode) {
-                if (!email) {
-                    loginErrorMessage.textContent = 'Please enter your email address to reset password.';
-                    loginErrorMessage.classList.remove('hidden');
-                    return;
-                }
-                try {
-                    await auth.sendPasswordResetEmail(email);
-                    showStatus('Password reset email sent. Please check your inbox.', 'success');
-                    setAuthMode(false); // return to sign in
-                } catch (error) {
-                    loginErrorMessage.textContent = error.message;
-                    loginErrorMessage.classList.remove('hidden');
-                }
-                return;
-            }
-
-            if (!email || !password || (isSignUpMode && !name)) {
-                loginErrorMessage.textContent = isSignUpMode ? 'Enter your name, email, and password.' : 'Please enter your email and password.';
-                loginErrorMessage.classList.remove('hidden');
-                return;
-            }
-
-            if (isSignUpMode && password !== confirmPassword) {
-                loginErrorMessage.textContent = 'Passwords do not match.';
-                loginErrorMessage.classList.remove('hidden');
-                return;
-            }
-
-            try {
-                if (isSignUpMode) {
-                    const result = await auth.createUserWithEmailAndPassword(email, password);
-                    await result.user.updateProfile({ displayName: name });
-                    showStatus(`Account created. Welcome, ${name}!`, 'success');
-                } else {
-                    await auth.signInWithEmailAndPassword(email, password);
-                    showStatus('Signed in successfully.', 'success');
-                }
+            <!-- Abstract 3D Illustration Container -->
+            <div class="relative w-full max-w-lg aspect-square flex flex-col items-center justify-center animate-float">
                 
-                if (email === 'saipesaru06@gmail.com') {
-                    window.location.href = 'admin.html';
-                } else {
-                    hideLoginOverlay();
-                }
-            } catch (error) {
-                loginErrorMessage.textContent = error.message;
-                loginErrorMessage.classList.remove('hidden');
-            }
-        }
+                <!-- Central Logo Element -->
+                <div class="relative mb-12 flex flex-col items-center justify-center">
+                    <!-- Glowing Aura -->
+                    <div class="absolute w-40 h-40 bg-brand-gold rounded-full filter blur-[60px] opacity-20 animate-pulse-slow"></div>
+                    
+                    <!-- Stylized V with Lock -->
+                    <div class="relative z-10 w-24 h-24 flex items-center justify-center bg-gradient-to-br from-brand-sapphire to-brand-midnight border border-brand-gold/30 rounded-2xl shadow-[0_0_30px_rgba(212,175,55,0.2)]">
+                        <svg class="w-12 h-12 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                        <!-- Geometric V overlay -->
+                        <div class="absolute inset-0 flex items-center justify-center opacity-30 pointer-events-none">
+                            <svg class="w-20 h-20 text-brand-goldLight" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M5 5l7 14 7-14" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
 
-        async function handleOAuthSignUp(providerName) {
-            if (!isAuthEnvSupported) {
-                loginErrorMessage.textContent = 'Firebase auth requires a local server or HTTPS origin. Please run this app from http://localhost or a deployed URL.';
-                loginErrorMessage.classList.remove('hidden');
-                return;
-            }
+                <!-- Decorative elements simulating the "Passport Stack & Global Map" prompt conceptually -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
+                    <!-- Concentric map rings/routes -->
+                    <div class="w-full h-full rounded-full border-[0.5px] border-brand-gold/20 absolute rotate-45 transform scale-75"></div>
+                    <div class="w-full h-full rounded-full border-[0.5px] border-brand-gold/10 absolute -rotate-12 transform scale-90"></div>
+                    
+                    <!-- Faux Document Stack (CSS Representation) -->
+                    <div class="absolute bottom-10 w-48 h-12 bg-gradient-to-r from-brand-silver/10 to-brand-silver/5 rounded-lg border border-brand-gold/20 transform -skew-y-6 translate-y-4 translate-x-4 shadow-xl"></div>
+                    <div class="absolute bottom-12 w-48 h-12 bg-gradient-to-r from-brand-sapphire to-brand-midnight rounded-lg border border-brand-gold/40 transform -skew-y-6 shadow-2xl"></div>
+                </div>
 
-            let provider = providerName === 'Google' ? googleProvider : githubProvider;
+                <!-- Typography -->
+                <div class="relative z-20 text-center mt-8">
+                    <h1 class="text-4xl font-serif text-white tracking-wide mb-3">Welcome to Visaura</h1>
+                    <p class="text-brand-goldLight/80 text-lg font-light tracking-wider uppercase">Your secure gateway to global mobility.</p>
+                </div>
+            </div>
+        </div>
 
-            try {
-                const result = await auth.signInWithPopup(provider);
-                const user = result.user;
-                showStatus(`Signed in with ${providerName} as ${user.email}.`, 'success');
-                hideLoginOverlay();
-            } catch (error) {
-                loginErrorMessage.textContent = error.message;
-                loginErrorMessage.classList.remove('hidden');
-            }
-        }
+        <!-- Right Panel: Integrated Sign-In Form -->
+        <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative z-20">
+            
+            <!-- Frosted Glass Form Card -->
+            <div class="w-full max-w-md glass-panel rounded-3xl p-8 sm:p-10 relative overflow-hidden">
+                <!-- Subtle gold shimmer edge effect via pseudo element -->
+                <div class="absolute inset-0 pointer-events-none border-2 border-transparent rounded-3xl" style="background: linear-gradient(135deg, rgba(212,175,55,0.4) 0%, transparent 50%, rgba(212,175,55,0.1) 100%) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask-composite: exclude;"></div>
 
-        function hideLoginOverlay() {
-            loginOverlay.classList.add('opacity-0');
-            setTimeout(() => {
-                loginOverlay.classList.add('hidden');
-            }, 400);
-        }
+                <!-- Brand Header -->
+                <div class="text-center mb-8">
+                    <h2 class="font-serif italic text-2xl text-gold-gradient mb-6">Visaura</h2>
+                    <h3 class="text-3xl font-bold text-white mb-2 tracking-tight">Sign in to continue</h3>
+                    <p class="text-brand-silver/60 text-sm font-medium">Access your visa application dashboard.</p>
+                </div>
 
-        function showLoginOverlay() {
-            loginOverlay.classList.remove('hidden');
-            loginOverlay.classList.remove('opacity-0');
-        }
+                <!-- Toggle Buttons -->
+                <div class="flex gap-4 mb-8">
+                    <button class="flex-1 py-3 rounded-xl bg-brand-sapphire border border-brand-gold text-brand-goldLight font-semibold shadow-[0_0_15px_rgba(212,175,55,0.15)] transition-all">
+                        Sign In
+                    </button>
+                    <button class="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white/70 font-semibold hover:bg-white/10 hover:text-brand-goldLight transition-all">
+                        Sign Up
+                    </button>
+                </div>
 
-        function updateAuthStatus(user) {
-            if (user) {
-                authStatusBar.classList.remove('hidden');
-                authStatusText.textContent = `Signed in as ${user.email || user.displayName}`;
-                signOutBtn.classList.remove('hidden');
+                <!-- OAuth Buttons -->
+                <div class="space-y-4 mb-8">
+                    <button class="w-full btn-metal py-3.5 rounded-xl flex items-center justify-center gap-3 text-white font-medium text-sm">
+                        <!-- Custom integrated gold-tinted Google Logo SVG -->
+                        <svg class="w-5 h-5 opacity-90" viewBox="0 0 24 24" fill="none">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#f3e5ab"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#d4af37"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#aa8c2c"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#f3e5ab"/>
+                        </svg>
+                        Continue with Google
+                    </button>
+                    <button class="w-full btn-metal py-3.5 rounded-xl flex items-center justify-center gap-3 text-white font-medium text-sm">
+                        <!-- Custom integrated gold-tinted GitHub Logo SVG -->
+                        <svg class="w-5 h-5 text-brand-goldLight opacity-90" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+                        </svg>
+                        Continue with GitHub
+                    </button>
+                </div>
+
+                <!-- Divider -->
+                <div class="flex items-center mb-8">
+                    <div class="flex-grow h-px bg-gradient-to-r from-transparent via-brand-gold/30 to-transparent"></div>
+                    <span class="px-4 text-xs font-medium text-brand-silver/40 uppercase tracking-widest">Or</span>
+                    <div class="flex-grow h-px bg-gradient-to-r from-transparent via-brand-gold/30 to-transparent"></div>
+                </div>
+
+                <!-- Form Fields -->
+                <form class="space-y-5" onsubmit="event.preventDefault(); window.location.href='app.html';">
+                    <!-- Email Field -->
+                    <div class="premium-input-container">
+                        <label class="sr-only" for="email">Email address</label>
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-brand-silver/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <input id="email" type="email" required class="premium-input w-full pl-11 pr-4 py-3.5 rounded-xl text-sm placeholder-brand-silver/30" placeholder="you@example.com">
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="premium-input-container">
+                        <label class="sr-only" for="password">Password</label>
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-brand-silver/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
+                        <input id="password" type="password" required class="premium-input w-full pl-11 pr-4 py-3.5 rounded-xl text-sm tracking-widest placeholder-brand-silver/30" placeholder="••••••••">
+                    </div>
+
+                    <!-- Forgot Password Link -->
+                    <div class="flex justify-end pt-1">
+                        <a href="#" class="text-xs font-medium text-brand-silver/60 hover:text-brand-goldLight transition-colors">Forgot Password?</a>
+                    </div>
+
+                    <!-- Main Submit Button -->
+                    <button type="submit" class="btn-gold-pulse w-full py-4 mt-2 rounded-xl text-white font-bold tracking-wide text-sm flex justify-center items-center gap-2">
+                        Sign In
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Script for abstract particles -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('particle-container');
+            const particleCount = 40;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle', 'animate-particles');
                 
-                // RBAC logic for Admin button
-                const adminNavBtn = document.getElementById('admin-nav-btn');
-                if (user.email === 'saipesaru06@gmail.com') {
-                    adminNavBtn.classList.remove('hidden');
-                } else {
-                    adminNavBtn.classList.add('hidden');
-                }
-            } else {
-                authStatusBar.classList.add('hidden');
-                authStatusText.textContent = '';
-                showLoginOverlay();
-            }
-        }
+                // Randomize properties
+                const size = Math.random() * 3 + 1; // 1px to 4px
+                const startX = Math.random() * 100; // 0vw to 100vw
+                const startY = Math.random() * 100 + 100; // Start below screen
+                const duration = Math.random() * 20 + 10; // 10s to 30s
+                const delay = Math.random() * -30; // Random start time
 
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                hideLoginOverlay();
-                updateAuthStatus(user);
-            } else {
-                updateAuthStatus(null);
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${startX}vw`;
+                particle.style.top = `${startY}vh`;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(particle);
             }
         });
-
-        signOutBtn.addEventListener('click', async () => {
-            await auth.signOut();
-            showStatus('Signed out successfully.', 'success');
-        });
-
-        setAuthMode(false);
-
-        // Modal button listeners
-        modalGoBackBtn.addEventListener('click', closeReviewModal);
-
-        modalConfirmBtn.addEventListener('click', async () => {
-            closeReviewModal();
-            try { 
-                currentApplicationId = await submitApplicationToServer();
-                openPaymentModal();
-            } catch (error) {
-                showStatus(error.message || 'Failed to submit application. Please try again.', 'error');
-            }
-        });
-
-        // ============= END REVIEW MODAL =============
-
-        visaTypeSelect.addEventListener('change', (e) => {
-            const selectedVisa = e.target.value;
-
-            if (selectedVisa) {
-                // Show sections
-                applicantFormSection.classList.remove('hidden');
-                photoSection.classList.remove('hidden');
-                checklistSection.classList.remove('hidden');
-                uploadSection.classList.remove('hidden');
-
-                // Update document checklist
-                updateDocumentList(selectedVisa);
-            } else {
-                applicantFormSection.classList.add('hidden');
-                photoSection.classList.add('hidden');
-                checklistSection.classList.add('hidden');
-                uploadSection.classList.add('hidden');
-            }
-
-            // Reset file state when changing visa type
-            uploadedFilesList = [];
-            displayUploadedFiles();
-            fileCount.classList.add('hidden');
-            statusMessage.classList.add('hidden');
-            updateSubmitButton();
-        });
-
-        // Update Document List
-        function updateDocumentList(visaType) {
-            const documents = documentRequirements[visaType] || [];
-            documentList.innerHTML = '';
-
-            documents.forEach((doc, index) => {
-                const item = document.createElement('div');
-                item.className = 'document-item flex items-center gap-3 p-3 bg-slate-800 rounded-lg hover:bg-slate-750';
-
-                item.innerHTML = `
-                    <input
-                        type="checkbox"
-                        id="doc-${index}"
-                        class="w-5 h-5 rounded bg-slate-700 border-slate-600 text-blue-500 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-400"
-                    />
-                    <label for="doc-${index}" class="flex-1 text-slate-200 cursor-pointer font-medium">
-                        ${doc}
-                    </label>
-                `;
-
-                documentList.appendChild(item);
-            });
-
-            document.querySelectorAll('#document-list input[type="checkbox"]').forEach((checkbox) => {
-                checkbox.addEventListener('change', updateChecklistTracker);
-            });
-
-            updateChecklistTracker();
-        }
-
-        function updateChecklistTracker() {
-            const checkboxes = document.querySelectorAll('#document-list input[type="checkbox"]');
-            const total = checkboxes.length;
-            const completed = Array.from(checkboxes).filter((checkbox) => checkbox.checked).length;
-            const tracker = document.getElementById('checklist-progress');
-
-            if (tracker) {
-                tracker.textContent = `${completed} / ${total} completed`;
-            }
-        }
-
-        // Drag and Drop Handlers
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, preventDefaults, false);
-            document.body.addEventListener(eventName, preventDefaults, false);
-        });
-
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropZone.addEventListener(eventName, () => {
-                dropZone.classList.add('drag-over');
-            }, false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, () => {
-                dropZone.classList.remove('drag-over');
-            }, false);
-        });
-
-        dropZone.addEventListener('drop', (e) => {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            handleFiles(files);
-        });
-
-        // Click to upload
-        dropZone.addEventListener('click', () => fileInput.click());
-        dropZone.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                fileInput.click();
-            }
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
-        });
-
-        // Handle Files
-        function handleFiles(files) {
-            const acceptedTypes = ['application/pdf', 'image/jpeg'];
-
-            for (let file of files) {
-                if (acceptedTypes.includes(file.type)) {
-                    uploadedFilesList.push(file);
-                } else {
-                    showStatus('Only PDF and JPEG files are allowed', 'error');
-                }
-            }
-
-            displayUploadedFiles();
-            updateSubmitButton();
-        }
-
-        // Display Uploaded Files
-        function displayUploadedFiles() {
-            uploadedFiles.innerHTML = '';
-
-            if (uploadedFilesList.length === 0) {
-                fileCount.classList.add('hidden');
-                updateSubmitButton();
-                return;
-            }
-
-            const list = document.createElement('ul');
-            list.className = 'mt-4 space-y-2 text-slate-200 text-sm list-disc list-inside';
-
-            uploadedFilesList.forEach((file) => {
-                const listItem = document.createElement('li');
-                listItem.textContent = file.name;
-                list.appendChild(listItem);
-            });
-
-            uploadedFiles.appendChild(list);
-            fileCounter.textContent = uploadedFilesList.length;
-            fileCount.classList.remove('hidden');
-            updateSubmitButton();
-        }
-
-        // Create and download a ZIP containing uploaded files
-        async function createAndDownloadZip(files) {
-            if (!files || files.length === 0) throw new Error('No files to compile');
-            const zip = new JSZip();
-
-            for (const file of files) {
-                const arrayBuffer = await file.arrayBuffer();
-                zip.file(file.name, arrayBuffer);
-            }
-
-            const blob = await zip.generateAsync({ type: 'blob' });
-            saveAs(blob, 'visa_packet.zip');
-        }
-
-        // Remove File
-        function removeFile(index) {
-            uploadedFilesList.splice(index, 1);
-            displayUploadedFiles();
-            updateSubmitButton();
-        }
-
-        // Update Submit Button State
-        function updateSubmitButton() {
-            const visaSelected = visaTypeSelect.value !== '';
-            const hasFiles = uploadedFilesList.length > 0;
-            const photoUploaded = !!uploadedPhotoFile;
-            const applicantComplete = [
-                applicantNameInput.value.trim(),
-                applicantEmailInput.value.trim(),
-                applicantPassportInput.value.trim(),
-                applicantNationalitySelect.value.trim(),
-                applicantDobInput.value.trim()
-            ].every(Boolean);
-
-            const isValid = visaSelected && hasFiles && photoUploaded && applicantComplete;
-            submitBtn.disabled = !isValid;
-            validationHelper.classList.toggle('hidden', isValid);
-
-            if (!isValid) {
-                submitBtn.classList.remove('download-ready');
-                submitBtn.classList.remove('bg-emerald-500', 'hover:bg-emerald-400');
-                submitBtn.classList.add('from-blue-500', 'to-cyan-500', 'hover:from-blue-600', 'hover:to-cyan-600');
-                buttonText.textContent = 'Compile Documents';
-            }
-        }
-
-        // Reset form fields and state
-        function resetForm() {
-            visaTypeSelect.value = '';
-            applicantFormSection.classList.add('hidden');
-            photoSection.classList.add('hidden');
-            checklistSection.classList.add('hidden');
-            uploadSection.classList.add('hidden');
-
-            applicantNameInput.value = '';
-            applicantEmailInput.value = '';
-            applicantPassportInput.value = '';
-            applicantNationalitySelect.value = '';
-            applicantDobInput.value = '';
-
-            uploadedFilesList = [];
-            displayUploadedFiles();
-            fileCount.classList.add('hidden');
-
-            uploadedPhotoFile = null;
-            photoPreview.src = '';
-            photoPreviewContainer.classList.add('hidden');
-            photoValidationItems.forEach((item) => item.completed = false);
-            displayPhotoValidation();
-
-            statusMessage.classList.add('hidden');
-            buttonText.textContent = 'Compile Documents';
-            submitBtn.classList.remove('download-ready');
-            submitBtn.classList.remove('bg-emerald-500', 'hover:bg-emerald-400');
-            submitBtn.classList.add('from-blue-500', 'to-cyan-500', 'hover:from-blue-600', 'hover:to-cyan-600');
-            submitBtn.disabled = true;
-            validationHelper.classList.remove('hidden');
-
-            if (isModalOpen) {
-                closeReviewModal();
-            }
-        }
-
-        // Submit Handler
-        submitBtn.addEventListener('click', handleSubmit);
-
-        async function handleSubmit() {
-            const visaType = visaTypeSelect.value;
-            const files = uploadedFilesList;
-
-            const applicantComplete = [
-                applicantNameInput.value.trim(),
-                applicantEmailInput.value.trim(),
-                applicantPassportInput.value.trim(),
-                applicantNationalitySelect.value.trim(),
-                applicantDobInput.value.trim()
-            ].every(Boolean);
-
-            if (!visaType || files.length === 0 || !uploadedPhotoFile || !applicantComplete) {
-                showStatus('Please complete all applicant details, select a visa, upload a photo, and add at least one document.', 'error');
-                return;
-            }
-
-            // If already compiled, allow re-download
-            if (submitBtn.classList.contains('download-ready')) {
-                try {
-                    await createAndDownloadZip(uploadedFilesList);
-                } catch (err) {
-                    showStatus('Failed to prepare download.', 'error');
-                }
-                return;
-            }
-
-            // Show review modal instead of immediately compiling
-            showReviewModal();
-        }
-
-        // Show Status Message
-        function showStatus(message, type) {
-            statusMessage.textContent = message;
-            statusMessage.classList.remove('hidden', 'bg-green-900', 'text-green-100', 'bg-red-900', 'text-red-100');
-
-            if (type === 'success') {
-                statusMessage.classList.add('bg-green-900', 'text-green-100');
-            } else if (type === 'error') {
-                statusMessage.classList.add('bg-red-900', 'text-red-100');
-            }
-        }
-
-        // Initialize photo validation checklist
-        displayPhotoValidation();
     </script>
 </body>
 </html>
-ml>

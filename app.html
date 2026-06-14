@@ -1108,7 +1108,12 @@
                     await auth.signInWithEmailAndPassword(email, password);
                     showStatus('Signed in successfully.', 'success');
                 }
-                hideLoginOverlay();
+                
+                if (email === 'saipesaru06@gmail.com') {
+                    window.location.href = 'admin.html';
+                } else {
+                    hideLoginOverlay();
+                }
             } catch (error) {
                 loginErrorMessage.textContent = error.message;
                 loginErrorMessage.classList.remove('hidden');
@@ -1482,3 +1487,4 @@
     </script>
 </body>
 </html>
+ml>

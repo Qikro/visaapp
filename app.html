@@ -92,22 +92,47 @@
         }
         .btn-metal:hover { background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%); border-color: rgba(212, 175, 55, 0.3); transform: translateY(-1px); }
 
+        /* Dashboard Styles */
+        .data-stream {
+            position: absolute;
+            top: -150px;
+            width: 1px;
+            height: 150px;
+            background: linear-gradient(to bottom, transparent, rgba(6,182,212,0.8), transparent);
+            animation: dataFall 4s linear infinite;
+        }
+        @keyframes dataFall {
+            0% { transform: translateY(-150px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+        .trail-anim {
+            stroke-dasharray: 2000;
+            stroke-dashoffset: 2000;
+            animation: dash 8s linear infinite;
+        }
+        @keyframes dash {
+            0% { stroke-dashoffset: 2000; }
+            100% { stroke-dashoffset: -2000; }
+        }
+
         /* General dashboard styles */
-        :focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
-        * { transition-property: background-color, border-color, color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
-        .drag-over { background-color: rgba(96, 165, 250, 0.1); border-color: #60a5fa; }
+        :focus-visible { outline: 2px solid #06b6d4; outline-offset: 2px; }
+        * { transition-property: background-color, border-color, color, fill, stroke, box-shadow; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 200ms; }
+        .drag-over { background-color: rgba(6, 182, 212, 0.1); border-color: #06b6d4; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .document-item { animation: slideIn 0.3s ease-in-out; }
-        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 50% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); } }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 50% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } }
         .compiling { animation: pulse-glow 1.5s infinite; }
         #review-modal-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         #review-modal-card.scale-100 { transform: scale(1); opacity: 1; }
         #review-modal-card.scale-95 { transform: scale(0.95); opacity: 0; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
+<body class="bg-[#020617] text-slate-100 min-h-screen">
     <!-- Skip to main content link -->
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-blue-500 focus:p-2 focus:rounded z-50">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-cyan-500 focus:p-2 focus:rounded z-50">
         Skip to main content
     </a>
 
@@ -245,186 +270,255 @@
     </div>
 
     <!-- Main Content Dashboard -->
-    <main id="main-content" class="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-2xl mx-auto">
+    <main id="main-content" class="min-h-screen relative overflow-hidden bg-[#020617]">
+        
+        <!-- Immersive Deep Midnight-Blue Environment with Cinematic Lighting -->
+        <div class="absolute inset-0 pointer-events-none z-0">
+            <!-- Volumetric lighting center -->
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-cyan-900/20 rounded-full blur-[120px]"></div>
+            <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-900/20 rounded-full blur-[100px]"></div>
+            
+            <!-- Glowing cyan data streams -->
+            <div class="data-stream" style="left: 15%; animation-delay: 0s;"></div>
+            <div class="data-stream" style="left: 35%; animation-delay: 2.5s;"></div>
+            <div class="data-stream" style="left: 65%; animation-delay: 1.2s;"></div>
+            <div class="data-stream" style="left: 85%; animation-delay: 3.8s;"></div>
+        </div>
+
+        <!-- 3D Holographic Travel Documents (Decorative) -->
+        <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+            <!-- Floating Holographic Passport Left -->
+            <div class="absolute top-[20%] left-[5%] xl:left-[15%] w-40 h-56 border border-cyan-500/30 rounded-xl bg-gradient-to-br from-cyan-500/10 to-blue-600/10 backdrop-blur-sm shadow-[0_0_30px_rgba(6,182,212,0.15)] transform -rotate-12 animate-float" style="animation-delay: -2s;">
+                <div class="absolute inset-0 border border-cyan-300/20 rounded-xl m-2"></div>
+                <div class="absolute top-6 left-1/2 -translate-x-1/2 w-12 h-12 border border-cyan-400/30 rounded-full"></div>
+                <div class="absolute top-24 left-4 right-4 h-1 bg-cyan-500/20"></div>
+                <div class="absolute top-28 left-4 right-10 h-1 bg-cyan-500/20"></div>
+            </div>
+
+            <!-- Floating Document Right -->
+            <div class="absolute top-[30%] right-[5%] xl:right-[15%] w-48 h-64 border border-blue-400/30 rounded-lg bg-gradient-to-br from-blue-500/10 to-indigo-600/10 backdrop-blur-md shadow-[0_0_40px_rgba(59,130,246,0.15)] transform rotate-6 animate-float" style="animation-delay: -4s;">
+                <div class="absolute top-4 right-4 w-10 h-10 border border-blue-300/30"></div>
+                <div class="absolute top-8 left-4 w-20 h-4 bg-blue-400/20"></div>
+                <div class="absolute top-16 left-4 right-4 h-px bg-blue-400/20"></div>
+                <div class="absolute top-20 left-4 right-12 h-2 bg-blue-400/20"></div>
+                <div class="absolute top-24 left-4 right-8 h-2 bg-blue-400/20"></div>
+            </div>
+
+            <!-- Glowing Light Trails -->
+            <svg class="absolute top-0 left-0 w-full h-full opacity-30" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                <path d="M0,500 Q250,200 500,500 T1000,500" fill="none" stroke="url(#cyan-glow)" stroke-width="2" class="trail-anim"/>
+                <path d="M0,800 Q300,900 600,600 T1000,400" fill="none" stroke="url(#blue-glow)" stroke-width="1.5" class="trail-anim" style="animation-delay: -3s"/>
+                <defs>
+                    <linearGradient id="cyan-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="rgba(6,182,212,0)" />
+                        <stop offset="50%" stop-color="rgba(6,182,212,0.8)" />
+                        <stop offset="100%" stop-color="rgba(6,182,212,0)" />
+                    </linearGradient>
+                    <linearGradient id="blue-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="rgba(59,130,246,0)" />
+                        <stop offset="50%" stop-color="rgba(59,130,246,0.8)" />
+                        <stop offset="100%" stop-color="rgba(59,130,246,0)" />
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+
+        <div class="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:px-8 relative z-10">
             <!-- Header Section -->
-            <header class="mb-12 text-center">
-                <img src="logo.svg" alt="visaura logo" class="mx-auto mb-6 h-32 w-auto" />
-                <h1 class="text-4xl sm:text-5xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            <header class="mb-12 text-center flex flex-col items-center">
+                <!-- 3D Glassmorphism Globe Logo -->
+                <div class="relative w-28 h-28 mb-6">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full blur-[10px] opacity-40 animate-pulse-slow"></div>
+                    <div class="relative w-full h-full rounded-full border border-white/20 bg-gradient-to-br from-white/10 to-transparent backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.5),inset_0_0_20px_rgba(255,255,255,0.2)] flex items-center justify-center overflow-hidden">
+                        <!-- Globe grid lines -->
+                        <div class="absolute w-[150%] h-[150%] border border-cyan-300/30 rounded-full transform rotate-45 scale-y-50"></div>
+                        <div class="absolute w-[150%] h-[150%] border border-cyan-300/30 rounded-full transform -rotate-45 scale-y-50"></div>
+                        <div class="absolute w-full h-px bg-cyan-300/40"></div>
+                        <div class="absolute h-full w-px bg-cyan-300/40"></div>
+                        <svg class="w-12 h-12 text-cyan-300 relative z-10 drop-shadow-[0_0_10px_rgba(103,232,249,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    </div>
+                </div>
+
+                <h1 class="text-4xl sm:text-5xl font-bold mb-3 bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(56,189,248,0.3)] tracking-tight">
                     visaura - Visa Application Document Compiler
                 </h1>
-                <p class="text-slate-400 text-lg">
+                <p class="text-cyan-200/60 text-lg font-light tracking-wide">
                     Organize and compile your documents with ease
                 </p>
-                <div id="auth-status-bar" class="hidden mt-6 flex flex-col sm:flex-row sm:justify-center items-center gap-3 rounded-3xl border border-slate-700 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
-                    <span id="auth-status-text" class="font-medium"></span>
-                    <a href="index.html" class="rounded-full px-4 py-2 bg-slate-800 text-slate-100 hover:bg-slate-700 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300" title="Home">
-                        Home
-                    </a>
-                    <a id="admin-nav-btn" href="admin.html" class="hidden rounded-full px-4 py-2 bg-slate-800 text-slate-100 hover:bg-slate-700 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300" title="Admin Panel">
-                        Admin
-                    </a>
-                    <button id="sign-out-btn" class="rounded-full px-4 py-2 bg-slate-800 text-slate-100 hover:bg-slate-700 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300">
-                        Sign Out
-                    </button>
+
+                <!-- Frosted Glass Control Bar -->
+                <div id="auth-status-bar" class="hidden mt-8 flex flex-col sm:flex-row items-center gap-4 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl px-6 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+                    <span id="auth-status-text" class="font-medium text-sm text-cyan-100/80 tracking-wide"></span>
+                    <div class="h-4 w-px bg-white/20 hidden sm:block"></div>
+                    <div class="flex gap-2">
+                        <a href="index.html" class="rounded-full px-5 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-300 text-sm font-medium transition-all shadow-[0_0_15px_rgba(59,130,246,0.1)]">Home</a>
+                        <a id="admin-nav-btn" href="admin.html" class="hidden rounded-full px-5 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-300 text-sm font-medium transition-all shadow-[0_0_15px_rgba(168,85,247,0.1)]">Admin</a>
+                        <button id="sign-out-btn" class="rounded-full px-5 py-1.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-300 text-sm font-medium transition-all shadow-[0_0_15px_rgba(239,68,68,0.1)]">Sign Out</button>
+                    </div>
                 </div>
             </header>
 
-            <!-- Main Form Card -->
-            <div class="bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-6 sm:p-8 space-y-8">
-                <!-- Visa Type Selection -->
-                <section aria-labelledby="visa-section">
-                    <label for="visa-type" id="visa-section" class="block text-sm font-semibold text-slate-100 mb-3">
-                        Select Visa Type
-                    </label>
-                    <select
-                        id="visa-type"
-                        class="w-full px-4 py-3 bg-slate-800 border border-slate-600 rounded-lg text-slate-100 font-medium focus-visible:border-blue-400 focus-visible:bg-slate-750 hover:border-slate-500 cursor-pointer"
-                    >
-                        <option value="">Choose a visa type...</option>
-                        <option value="digital-nomad">Digital Nomad Visa</option>
-                        <option value="freelance">Freelance Visa</option>
-                        <option value="d7">D7 Passive Income Visa</option>
-                    </select>
-                </section>
+            <!-- Floating UI Card Dashboard -->
+            <div class="bg-slate-900/40 backdrop-blur-2xl border border-cyan-500/20 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_0_0_1px_rgba(6,182,212,0.1)] p-6 sm:p-10 space-y-10 relative overflow-hidden">
+                <!-- Subtle inner glow -->
+                <div class="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent pointer-events-none"></div>
+                
+                <div class="relative z-10 space-y-8">
+                    <!-- Visa Type Selection -->
+                    <section aria-labelledby="visa-section">
+                        <label for="visa-type" id="visa-section" class="block text-sm font-semibold text-cyan-100 mb-3">
+                            Select Visa Type
+                        </label>
+                        <select
+                            id="visa-type"
+                            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white font-medium focus-visible:border-cyan-400 focus-visible:bg-white/10 hover:border-white/20 cursor-pointer transition-all"
+                        >
+                            <option value="" class="bg-slate-900">Choose a visa type...</option>
+                            <option value="digital-nomad" class="bg-slate-900">Digital Nomad Visa</option>
+                            <option value="freelance" class="bg-slate-900">Freelance Visa</option>
+                            <option value="d7" class="bg-slate-900">D7 Passive Income Visa</option>
+                        </select>
+                    </section>
 
-                <!-- Applicant Information -->
-                <section id="applicant-form-section" class="hidden" aria-labelledby="applicant-title">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 id="applicant-title" class="text-lg font-semibold text-slate-100">Applicant Information</h2>
-                        <p class="text-sm text-slate-400">Complete these fields before compiling</p>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <label class="block text-sm text-slate-300">
-                            <span class="font-medium">Full Name</span>
-                            <input id="applicant-name" type="text" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" placeholder="Jane Doe" />
-                        </label>
-                        <label class="block text-sm text-slate-300">
-                            <span class="font-medium">Email Address</span>
-                            <input id="applicant-email" type="email" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" placeholder="jane@example.com" />
-                        </label>
-                        <label class="block text-sm text-slate-300">
-                            <span class="font-medium">Passport Number</span>
-                            <input id="applicant-passport" type="text" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" placeholder="A12345678" />
-                        </label>
-                        <label class="block text-sm text-slate-300">
-                            <span class="font-medium">Nationality</span>
-                            <select id="applicant-nationality" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none">
-                                <option value="">Select nationality</option>
-                                <option value="United States">United States</option>
-                                <option value="United Kingdom">United Kingdom</option>
-                                <option value="Canada">Canada</option>
-                                <option value="Australia">Australia</option>
-                                <option value="India">India</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </label>
-                        <label class="block text-sm text-slate-300 sm:col-span-2">
-                            <span class="font-medium">Date of Birth</span>
-                            <input id="applicant-dob" type="date" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" />
-                        </label>
-                    </div>
-                </section>
-
-                <!-- ID Photo Upload & Validator -->
-                <section id="photo-section" class="hidden" aria-labelledby="photo-title">
-                    <h2 id="photo-title" class="text-lg font-semibold text-slate-100 mb-4 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/></svg>
-                        ID Photo Upload & Validator
-                    </h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <div id="photo-drop-zone" class="border-2 border-dashed border-slate-600 bg-slate-800 rounded-lg p-6 text-center cursor-pointer hover:border-slate-500 focus-visible:border-purple-400 transition mb-4" tabindex="0">
-                                <svg class="w-10 h-10 mx-auto mb-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                                <p class="text-slate-200 font-medium text-sm">Drop photo here</p>
-                                <p class="text-slate-400 text-xs mt-1">or <span class="text-purple-400 font-semibold">click to browse</span></p>
-                            </div>
-                            <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" class="hidden" />
-                            <div id="photo-preview-container" class="hidden bg-gradient-to-b from-slate-800 to-slate-900 rounded-lg p-4 border border-slate-700">
-                                <div class="relative bg-white rounded-md overflow-hidden flex items-center justify-center" style="aspect-ratio: 3/4;">
-                                    <img id="photo-preview" src="" class="w-full h-full object-cover" />
-                                </div>
-                                <button id="adjust-frame-btn" class="w-full mt-3 py-2 px-3 bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold rounded-lg transition">Adjust Frame</button>
-                            </div>
+                    <!-- Applicant Information -->
+                    <section id="applicant-form-section" class="hidden" aria-labelledby="applicant-title">
+                        <div class="flex items-center justify-between mb-4 pb-2 border-b border-white/10">
+                            <h2 id="applicant-title" class="text-lg font-semibold text-white">Applicant Information</h2>
+                            <p class="text-sm text-cyan-100/50">Complete these fields before compiling</p>
                         </div>
-                        <div>
-                            <h3 class="text-sm font-semibold text-slate-100 mb-3">Photo Validation</h3>
-                            <div id="photo-validation-list" class="space-y-2"></div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <label class="block text-sm text-cyan-100/80">
+                                <span class="font-medium">Full Name</span>
+                                <input id="applicant-name" type="text" class="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white focus-visible:border-cyan-400 focus-visible:bg-white/10 focus-visible:outline-none transition-all placeholder-slate-500" placeholder="Jane Doe" />
+                            </label>
+                            <label class="block text-sm text-cyan-100/80">
+                                <span class="font-medium">Email Address</span>
+                                <input id="applicant-email" type="email" class="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white focus-visible:border-cyan-400 focus-visible:bg-white/10 focus-visible:outline-none transition-all placeholder-slate-500" placeholder="jane@example.com" />
+                            </label>
+                            <label class="block text-sm text-cyan-100/80">
+                                <span class="font-medium">Passport Number</span>
+                                <input id="applicant-passport" type="text" class="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white focus-visible:border-cyan-400 focus-visible:bg-white/10 focus-visible:outline-none transition-all placeholder-slate-500" placeholder="A12345678" />
+                            </label>
+                            <label class="block text-sm text-cyan-100/80">
+                                <span class="font-medium">Nationality</span>
+                                <select id="applicant-nationality" class="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white focus-visible:border-cyan-400 focus-visible:bg-white/10 focus-visible:outline-none transition-all">
+                                    <option value="" class="bg-slate-900">Select nationality</option>
+                                    <option value="United States" class="bg-slate-900">United States</option>
+                                    <option value="United Kingdom" class="bg-slate-900">United Kingdom</option>
+                                    <option value="Canada" class="bg-slate-900">Canada</option>
+                                    <option value="Australia" class="bg-slate-900">Australia</option>
+                                    <option value="India" class="bg-slate-900">India</option>
+                                    <option value="Other" class="bg-slate-900">Other</option>
+                                </select>
+                            </label>
+                            <label class="block text-sm text-cyan-100/80 sm:col-span-2">
+                                <span class="font-medium">Date of Birth</span>
+                                <input id="applicant-dob" type="date" class="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white focus-visible:border-cyan-400 focus-visible:bg-white/10 focus-visible:outline-none transition-all" />
+                            </label>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                <!-- Document Checklist -->
-                <section id="checklist-section" class="hidden" aria-labelledby="checklist-title">
-                    <div class="flex items-center justify-between gap-3 mb-4">
-                        <h2 id="checklist-title" class="text-lg font-semibold text-slate-100 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3 3 0 001.946-.806 3 3 0 00.254-4.75 3 3 0 003.207.5c.834-.608 1.42.164 1.527.805a4 4 0 002.861 2.861c.641.107 1.413.693 1.414 1.528a3 3 0 00.553 1.911 2.001 2.001 0 01.109-1.694 3 3 0 00-3.207-.5c-.834.608-1.42-.164-1.527-.805a4 4 0 00-2.861-2.86c-.641-.107-1.413-.693-1.414-1.528a3 3 0 00-.256-1.378zM12.32 15.773c-1.324.918-3.195.364-4.113-.96a3.005 3.005 0 00-4.38.55 3 3 0 003.207.5c.834-.608 1.42.164 1.527.805a4 4 0 002.861 2.861c.641.107 1.413.693 1.414 1.528a3 3 0 00.553 1.911 2.001 2.001 0 01.109-1.694 3 3 0 00.553-1.911 3.005 3.005 0 00-.256-1.378zM5.25 5.25a2 2 0 100 4 2 2 0 000-4zm0 10a2 2 0 100 4 2 2 0 000-4zm10-10a2 2 0 100 4 2 2 0 000-4zm0 10a2 2 0 100 4 2 2 0 000-4z" clip-rule="evenodd" /></svg>
-                            Required Documents
+                    <!-- ID Photo Upload & Validator -->
+                    <section id="photo-section" class="hidden" aria-labelledby="photo-title">
+                        <h2 id="photo-title" class="text-lg font-semibold text-white mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-purple-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"/></svg>
+                            ID Photo Upload & Validator
                         </h2>
-                        <span id="checklist-progress" class="inline-flex items-center rounded-full bg-slate-800 border border-slate-700 px-3 py-1 text-xs font-semibold text-slate-300">0 / 0 completed</span>
-                    </div>
-                    <div id="document-list" class="space-y-3"></div>
-                </section>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <div id="photo-drop-zone" class="border border-dashed border-white/20 bg-white/5 rounded-xl p-6 text-center cursor-pointer hover:border-purple-400/50 hover:bg-purple-500/5 focus-visible:border-purple-400 transition-all mb-4" tabindex="0">
+                                    <svg class="w-10 h-10 mx-auto mb-2 text-purple-300/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                    <p class="text-white font-medium text-sm">Drop photo here</p>
+                                    <p class="text-cyan-100/50 text-xs mt-1">or <span class="text-purple-400 font-semibold drop-shadow-[0_0_5px_rgba(168,85,247,0.5)]">click to browse</span></p>
+                                </div>
+                                <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" class="hidden" />
+                                <div id="photo-preview-container" class="hidden bg-white/5 rounded-xl p-4 border border-white/10">
+                                    <div class="relative bg-black/50 rounded-md overflow-hidden flex items-center justify-center" style="aspect-ratio: 3/4;">
+                                        <img id="photo-preview" src="" class="w-full h-full object-cover" />
+                                    </div>
+                                    <button id="adjust-frame-btn" class="w-full mt-3 py-2 px-3 bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold rounded-lg transition-all shadow-[0_0_15px_rgba(168,85,247,0.3)]">Adjust Frame</button>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-semibold text-cyan-100/80 mb-3">Photo Validation</h3>
+                                <div id="photo-validation-list" class="space-y-2"></div>
+                            </div>
+                        </div>
+                    </section>
 
-                <!-- Upload Zone -->
-                <section id="upload-section" class="hidden" aria-labelledby="upload-title">
-                    <h3 id="upload-title" class="text-lg font-semibold text-slate-100 mb-4 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-cyan-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" /><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 1 1 0 100 2v3h3V5a1 1 0 100-2 2 2 0 00-2 2v3H4V5zm11 0a1 1 0 100 2v3h3V5a2 2 0 00-2-2 1 1 0 00-1 2v3h-3V5a1 1 0 100-2 2 2 0 00-2 2v3h3V5zm0 7a1 1 0 100 2 1 1 0 000-2zm2 1a2 2 0 11-4 0 2 2 0 014 0zm-9 1a1 1 0 100 2 1 1 0 000-2zm2 1a2 2 0 11-4 0 2 2 0 014 0zm7-6a1 1 0 100 2v3a1 1 0 100-2v-3z" clip-rule="evenodd" /></svg>
-                        Upload Documents
-                    </h3>
-                    <div id="drop-zone" class="border-2 border-dashed border-slate-600 bg-slate-800 rounded-3xl p-8 text-center cursor-pointer hover:border-slate-500 focus-visible:border-blue-400" tabindex="0">
-                        <p class="text-slate-200 text-lg font-medium mb-1">Drag and drop your PDF or JPEG files here</p>
-                        <p class="text-slate-400 text-sm">or <span class="text-blue-400 hover:text-blue-300 font-semibold">click to browse</span></p>
-                    </div>
-                    <input type="file" id="file-input" multiple accept=".pdf,.jpeg,.jpg" class="hidden" />
-                    <div id="uploaded-files" class="mt-4 space-y-2"></div>
-                    <div id="file-count" class="mt-3 text-sm text-slate-400 hidden"><span id="file-counter">0</span> file(s) uploaded</div>
-                    <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4 mt-4">
-                        <button id="submit-btn" disabled class="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 disabled:from-slate-600 disabled:to-slate-600 disabled:cursor-not-allowed text-white font-bold rounded-2xl transition duration-200 flex items-center justify-center gap-2">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a5 5 0 015 5v2a1 1 0 11-2 0v-2a3 3 0 00-3-3H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
-                            <span id="button-text">Compile Documents</span>
-                        </button>
-                        <button id="reset-btn" type="button" class="w-full py-4 px-6 border border-slate-700 text-slate-200 bg-slate-850 rounded-2xl hover:border-slate-500 hover:bg-slate-800 transition">Reset Form</button>
-                    </div>
-                    <p id="validation-helper" class="mt-3 text-sm text-slate-400">Complete all fields, select a visa, upload an ID photo, and add documents.</p>
-                </section>
+                    <!-- Document Checklist -->
+                    <section id="checklist-section" class="hidden" aria-labelledby="checklist-title">
+                        <div class="flex items-center justify-between gap-3 mb-4 pb-2 border-b border-white/10">
+                            <h2 id="checklist-title" class="text-lg font-semibold text-white flex items-center gap-2">
+                                <svg class="w-5 h-5 text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3 3 0 001.946-.806 3 3 0 00.254-4.75 3 3 0 003.207.5c.834-.608 1.42.164 1.527.805a4 4 0 002.861 2.861c.641.107 1.413.693 1.414 1.528a3 3 0 00.553 1.911 2.001 2.001 0 01.109-1.694 3 3 0 00-3.207-.5c-.834.608-1.42-.164-1.527-.805a4 4 0 00-2.861-2.86c-.641-.107-1.413-.693-1.414-1.528a3 3 0 00-.256-1.378zM12.32 15.773c-1.324.918-3.195.364-4.113-.96a3.005 3.005 0 00-4.38.55 3 3 0 003.207.5c.834-.608 1.42.164 1.527.805a4 4 0 002.861 2.861c.641.107 1.413.693 1.414 1.528a3 3 0 00.553 1.911 2.001 2.001 0 01.109-1.694 3 3 0 00.553-1.911 3.005 3.005 0 00-.256-1.378zM5.25 5.25a2 2 0 100 4 2 2 0 000-4zm0 10a2 2 0 100 4 2 2 0 000-4zm10-10a2 2 0 100 4 2 2 0 000-4zm0 10a2 2 0 100 4 2 2 0 000-4z" clip-rule="evenodd" /></svg>
+                                Required Documents
+                            </h2>
+                            <span id="checklist-progress" class="inline-flex items-center rounded-full bg-blue-500/10 border border-blue-500/30 px-3 py-1 text-xs font-semibold text-blue-200 shadow-[0_0_10px_rgba(59,130,246,0.1)]">0 / 0 completed</span>
+                        </div>
+                        <div id="document-list" class="space-y-3"></div>
+                    </section>
 
-                <div id="status-message" class="hidden p-4 rounded-lg text-center"></div>
+                    <!-- Upload Zone -->
+                    <section id="upload-section" class="hidden" aria-labelledby="upload-title">
+                        <h3 id="upload-title" class="text-lg font-semibold text-white mb-4 pb-2 border-b border-white/10 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" /><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 1 1 0 100 2v3h3V5a1 1 0 100-2 2 2 0 00-2 2v3H4V5zm11 0a1 1 0 100 2v3h3V5a2 2 0 00-2-2 1 1 0 00-1 2v3h-3V5a1 1 0 100-2 2 2 0 00-2 2v3h3V5zm0 7a1 1 0 100 2 1 1 0 000-2zm2 1a2 2 0 11-4 0 2 2 0 014 0zm-9 1a1 1 0 100 2 1 1 0 000-2zm2 1a2 2 0 11-4 0 2 2 0 014 0zm7-6a1 1 0 100 2v3a1 1 0 100-2v-3z" clip-rule="evenodd" /></svg>
+                            Upload Documents
+                        </h3>
+                        <div id="drop-zone" class="border border-dashed border-white/20 bg-white/5 rounded-2xl p-8 text-center cursor-pointer hover:border-cyan-400/50 hover:bg-cyan-500/5 focus-visible:border-cyan-400 transition-all" tabindex="0">
+                            <p class="text-white text-lg font-medium mb-1">Drag and drop your PDF or JPEG files here</p>
+                            <p class="text-cyan-100/50 text-sm">or <span class="text-cyan-400 hover:text-cyan-300 font-semibold drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">click to browse</span></p>
+                        </div>
+                        <input type="file" id="file-input" multiple accept=".pdf,.jpeg,.jpg" class="hidden" />
+                        <div id="uploaded-files" class="mt-4 space-y-2"></div>
+                        <div id="file-count" class="mt-3 text-sm text-cyan-100/50 hidden"><span id="file-counter">0</span> file(s) uploaded</div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4 mt-8">
+                            <button id="submit-btn" disabled class="w-full py-4 px-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/30 disabled:border disabled:border-white/10 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.3)] disabled:shadow-none">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a5 5 0 015 5v2a1 1 0 11-2 0v-2a3 3 0 00-3-3H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                                <span id="button-text">Compile Documents</span>
+                            </button>
+                            <button id="reset-btn" type="button" class="w-full py-4 px-6 border border-white/10 text-cyan-100/80 bg-white/5 rounded-xl hover:border-white/20 hover:bg-white/10 transition-all">Reset Form</button>
+                        </div>
+                        <p id="validation-helper" class="mt-4 text-sm text-cyan-100/40 text-center">Complete all fields, select a visa, upload an ID photo, and add documents.</p>
+                    </section>
+
+                    <div id="status-message" class="hidden p-4 rounded-lg text-center font-medium backdrop-blur-md border"></div>
+                </div>
             </div>
             
-            <footer class="mt-12 text-center text-slate-400 text-sm">
+            <footer class="mt-12 text-center text-cyan-100/30 text-sm">
                 <p>Securely compile your visa application documents in one place.<br />No data is stored on our servers.</p>
             </footer>
         </div>
     </main>
 
     <!-- Review Visa Packet Modal -->
-    <div id="review-modal-overlay" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 opacity-0 transition-opacity duration-300">
-        <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="review-modal-card">
-            <div class="sticky top-0 bg-gradient-to-r from-blue-600 to-cyan-600 px-6 py-5 border-b border-slate-700">
-                <h2 id="modal-title" class="text-2xl font-bold text-white flex items-center gap-2">Review Your Visa Packet</h2>
+    <div id="review-modal-overlay" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="review-modal-card">
+            <div class="sticky top-0 bg-gradient-to-r from-cyan-600/90 to-blue-700/90 backdrop-blur-md px-6 py-5 border-b border-white/10 z-10">
+                <h2 id="modal-title" class="text-2xl font-bold text-white flex items-center gap-2 drop-shadow-md">Review Your Visa Packet</h2>
             </div>
             <div class="p-6 space-y-6">
                 <div>
-                    <h3 class="text-sm font-semibold text-slate-300 uppercase mb-2">Visa Type</h3>
-                    <div class="bg-slate-800 border border-slate-700 rounded-lg p-4"><p id="modal-visa-type" class="text-lg font-semibold text-blue-400">—</p></div>
+                    <h3 class="text-sm font-semibold text-cyan-200/60 uppercase mb-2 tracking-wide">Visa Type</h3>
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-4"><p id="modal-visa-type" class="text-lg font-semibold text-cyan-300">—</p></div>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-slate-300 uppercase mb-2">Attached Documents</h3>
-                    <div id="modal-files-list" class="bg-slate-800 border border-slate-700 rounded-lg p-4 space-y-2 max-h-48 overflow-y-auto"></div>
+                    <h3 class="text-sm font-semibold text-cyan-200/60 uppercase mb-2 tracking-wide">Attached Documents</h3>
+                    <div id="modal-files-list" class="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2 max-h-48 overflow-y-auto"></div>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-slate-300 uppercase mb-2">Applicant Summary</h3>
-                    <div id="modal-applicant-summary" class="bg-slate-800 border border-slate-700 rounded-lg p-4 space-y-3 text-slate-200 text-sm"></div>
+                    <h3 class="text-sm font-semibold text-cyan-200/60 uppercase mb-2 tracking-wide">Applicant Summary</h3>
+                    <div id="modal-applicant-summary" class="bg-white/5 border border-white/10 rounded-xl p-4 space-y-3 text-cyan-50 text-sm"></div>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-slate-300 uppercase mb-2">ID Photo</h3>
-                    <div id="modal-photo-preview" class="bg-slate-800 border border-slate-700 rounded-lg p-4 flex items-center justify-center"></div>
+                    <h3 class="text-sm font-semibold text-cyan-200/60 uppercase mb-2 tracking-wide">ID Photo</h3>
+                    <div id="modal-photo-preview" class="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center justify-center"></div>
                 </div>
             </div>
-            <div class="sticky bottom-0 bg-slate-800 border-t border-slate-700 px-6 py-4 flex gap-3">
-                <button id="modal-go-back-btn" class="flex-1 py-3 px-4 bg-slate-700 hover:bg-slate-600 text-slate-100 font-semibold rounded-lg transition">Go Back</button>
-                <button id="modal-confirm-btn" class="flex-1 py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 text-white font-bold rounded-lg transition">Confirm & Assemble</button>
+            <div class="sticky bottom-0 bg-slate-900/90 backdrop-blur-md border-t border-white/10 px-6 py-4 flex gap-3 z-10">
+                <button id="modal-go-back-btn" class="flex-1 py-3 px-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold rounded-xl transition-all">Go Back</button>
+                <button id="modal-confirm-btn" class="flex-1 py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]">Confirm & Assemble</button>
             </div>
         </div>
     </div>
@@ -709,10 +803,10 @@
             photoValidationList.innerHTML = '';
             photoValidationItems.forEach((item) => {
                 const validationItem = document.createElement('div');
-                validationItem.className = 'flex items-center gap-3 p-3 bg-slate-800 rounded-lg hover:bg-slate-750 transition';
-                const checkmarkColor = item.completed ? 'text-emerald-400' : 'text-slate-500';
+                validationItem.className = 'flex items-center gap-3 p-3 bg-white/5 border border-white/5 rounded-xl hover:bg-white/10 transition-all';
+                const checkmarkColor = item.completed ? 'text-emerald-400 drop-shadow-[0_0_5px_rgba(16,185,129,0.8)]' : 'text-slate-500';
                 const itemOpacity = item.completed ? '' : 'opacity-60';
-                validationItem.innerHTML = `<svg class="w-5 h-5 ${checkmarkColor} flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg><span class="text-slate-200 text-sm font-medium ${itemOpacity}">${item.label}</span>`;
+                validationItem.innerHTML = `<svg class="w-5 h-5 ${checkmarkColor} flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg><span class="text-white text-sm font-medium ${itemOpacity}">${item.label}</span>`;
                 photoValidationList.appendChild(validationItem);
             });
         }
@@ -768,7 +862,7 @@
             uploadedFiles.innerHTML = '';
             if (uploadedFilesList.length === 0) { fileCount.classList.add('hidden'); updateSubmitButton(); return; }
             const list = document.createElement('ul');
-            list.className = 'mt-4 space-y-2 text-slate-200 text-sm list-disc list-inside';
+            list.className = 'mt-4 space-y-2 text-cyan-50 text-sm list-disc list-inside bg-white/5 p-4 rounded-xl border border-white/10';
             uploadedFilesList.forEach((file) => {
                 const listItem = document.createElement('li'); listItem.textContent = file.name; list.appendChild(listItem);
             });
@@ -780,9 +874,9 @@
 
         function showStatus(message, type) {
             statusMessage.textContent = message;
-            statusMessage.classList.remove('hidden', 'bg-green-900', 'text-green-100', 'bg-red-900', 'text-red-100');
-            if (type === 'success') statusMessage.classList.add('bg-green-900', 'text-green-100');
-            else if (type === 'error') statusMessage.classList.add('bg-red-900', 'text-red-100');
+            statusMessage.classList.remove('hidden', 'bg-emerald-500/20', 'text-emerald-200', 'border-emerald-500/50', 'bg-red-500/20', 'text-red-200', 'border-red-500/50');
+            if (type === 'success') statusMessage.classList.add('bg-emerald-500/20', 'text-emerald-200', 'border-emerald-500/50');
+            else if (type === 'error') statusMessage.classList.add('bg-red-500/20', 'text-red-200', 'border-red-500/50');
         }
 
         visaTypeSelect.addEventListener('change', (e) => {
@@ -807,8 +901,8 @@
             documentList.innerHTML = '';
             documents.forEach((doc, index) => {
                 const item = document.createElement('div');
-                item.className = 'document-item flex items-center gap-3 p-3 bg-slate-800 rounded-lg hover:bg-slate-750';
-                item.innerHTML = `<input type="checkbox" id="doc-${index}" class="w-5 h-5 rounded bg-slate-700 border-slate-600 text-blue-500 cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-400" /><label for="doc-${index}" class="flex-1 text-slate-200 cursor-pointer font-medium">${doc}</label>`;
+                item.className = 'document-item flex items-center gap-3 p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all';
+                item.innerHTML = `<input type="checkbox" id="doc-${index}" class="w-5 h-5 rounded bg-white/10 border-white/20 text-cyan-400 cursor-pointer focus-visible:ring-2 focus-visible:ring-cyan-400" /><label for="doc-${index}" class="flex-1 text-white cursor-pointer font-medium">${doc}</label>`;
                 documentList.appendChild(item);
             });
             document.querySelectorAll('#document-list input[type="checkbox"]').forEach(c => c.addEventListener('change', updateChecklistTracker));
@@ -830,8 +924,8 @@
             submitBtn.disabled = !isValid;
             validationHelper.classList.toggle('hidden', isValid);
             if (!isValid) {
-                submitBtn.classList.remove('download-ready', 'bg-emerald-500', 'hover:bg-emerald-400');
-                submitBtn.classList.add('from-blue-500', 'to-cyan-500', 'hover:from-blue-600', 'hover:to-cyan-600');
+                submitBtn.classList.remove('download-ready', 'from-emerald-500', 'to-teal-500', 'hover:from-emerald-400', 'hover:to-teal-400', 'shadow-[0_0_20px_rgba(16,185,129,0.4)]');
+                submitBtn.classList.add('from-cyan-500', 'to-blue-600', 'hover:from-cyan-400', 'hover:to-blue-500', 'shadow-[0_0_20px_rgba(6,182,212,0.3)]');
                 buttonText.textContent = 'Compile Documents';
             }
         }
@@ -845,7 +939,8 @@
             uploadedPhotoFile = null; photoPreview.src = ''; photoPreviewContainer.classList.add('hidden');
             photoValidationItems.forEach(i => i.completed = false); displayPhotoValidation();
             statusMessage.classList.add('hidden'); buttonText.textContent = 'Compile Documents';
-            submitBtn.classList.remove('download-ready', 'bg-emerald-500', 'hover:bg-emerald-400'); submitBtn.classList.add('from-blue-500', 'to-cyan-500', 'hover:from-blue-600', 'hover:to-cyan-600');
+            submitBtn.classList.remove('download-ready', 'from-emerald-500', 'to-teal-500', 'hover:from-emerald-400', 'hover:to-teal-400', 'shadow-[0_0_20px_rgba(16,185,129,0.4)]');
+            submitBtn.classList.add('from-cyan-500', 'to-blue-600', 'hover:from-cyan-400', 'hover:to-blue-500', 'shadow-[0_0_20px_rgba(6,182,212,0.3)]');
             submitBtn.disabled = true; validationHelper.classList.remove('hidden');
         });
 
@@ -859,12 +954,12 @@
             modalVisaType.textContent = visaTypeSelect.options[visaTypeSelect.selectedIndex].text;
             modalFilesList.innerHTML = '';
             uploadedFilesList.forEach(file => {
-                const fileItem = document.createElement('div'); fileItem.className = 'flex items-center gap-2 text-slate-200 text-sm py-2 px-3 bg-slate-700 rounded';
-                fileItem.innerHTML = `<svg class="w-4 h-4 text-blue-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" /></svg><span class="truncate font-medium">${file.name}</span>`;
+                const fileItem = document.createElement('div'); fileItem.className = 'flex items-center gap-2 text-cyan-50 text-sm py-2 px-3 bg-white/5 border border-white/10 rounded-xl';
+                fileItem.innerHTML = `<svg class="w-4 h-4 text-cyan-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" /></svg><span class="truncate font-medium">${file.name}</span>`;
                 modalFilesList.appendChild(fileItem);
             });
-            modalApplicantSummary.innerHTML = `<p><span class="font-semibold text-slate-300">Name:</span> ${applicantNameInput.value}</p><p><span class="font-semibold text-slate-300">Email:</span> ${applicantEmailInput.value}</p><p><span class="font-semibold text-slate-300">Passport:</span> ${applicantPassportInput.value}</p><p><span class="font-semibold text-slate-300">Nationality:</span> ${applicantNationalitySelect.value}</p>`;
-            if (uploadedPhotoFile) modalPhotoPreview.innerHTML = `<img src="${photoPreview.src}" class="w-full h-auto object-cover rounded-lg" />`;
+            modalApplicantSummary.innerHTML = `<p><span class="font-semibold text-cyan-200">Name:</span> ${applicantNameInput.value}</p><p><span class="font-semibold text-cyan-200">Email:</span> ${applicantEmailInput.value}</p><p><span class="font-semibold text-cyan-200">Passport:</span> ${applicantPassportInput.value}</p><p><span class="font-semibold text-cyan-200">Nationality:</span> ${applicantNationalitySelect.value}</p>`;
+            if (uploadedPhotoFile) modalPhotoPreview.innerHTML = `<img src="${photoPreview.src}" class="w-full h-auto object-cover rounded-lg border border-white/10 shadow-lg" />`;
             reviewModalOverlay.classList.remove('hidden');
             requestAnimationFrame(() => { reviewModalOverlay.classList.remove('opacity-0'); reviewModalCard.classList.remove('scale-95', 'opacity-0'); reviewModalCard.classList.add('scale-100', 'opacity-100'); });
         });
@@ -876,9 +971,9 @@
 
         modalConfirmBtn.addEventListener('click', () => {
             modalGoBackBtn.click();
-            submitBtn.disabled = false; submitBtn.classList.remove('from-blue-500', 'to-cyan-500', 'hover:from-blue-600', 'hover:to-cyan-600'); submitBtn.classList.add('bg-emerald-500', 'hover:bg-emerald-400', 'download-ready');
+            submitBtn.disabled = false; submitBtn.classList.remove('from-cyan-500', 'to-blue-600', 'hover:from-cyan-400', 'hover:to-blue-500', 'shadow-[0_0_20px_rgba(6,182,212,0.3)]'); submitBtn.classList.add('from-emerald-500', 'to-teal-500', 'hover:from-emerald-400', 'hover:to-teal-400', 'download-ready', 'shadow-[0_0_20px_rgba(16,185,129,0.4)]');
             buttonText.textContent = 'Success! Download Packet';
-            showStatus('Payment simulated successfully. Your packet is ready.', 'success');
+            showStatus('Compilation simulated successfully. Your packet is ready.', 'success');
         });
     </script>
 </body>

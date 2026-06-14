@@ -37,7 +37,7 @@
 <body id="admin-body" class="bg-slate-950 text-slate-300 min-h-screen antialiased selection:bg-red-500/30 opacity-0 transition-opacity duration-300">
     
     <!-- Admin Login Overlay -->
-    <div id="admin-login-overlay" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-md transition-opacity duration-500">
+    <div id="admin-login-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/80 backdrop-blur-md transition-opacity duration-500">
         <div class="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900 p-10 shadow-2xl relative overflow-hidden">
             <!-- Decorative gradient -->
             <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-rose-600"></div>
@@ -72,8 +72,21 @@
         </div>
     </div>
 
+    <!-- Access Denied Overlay -->
+    <div id="access-denied-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/80 backdrop-blur-md transition-opacity duration-500">
+        <div class="w-full max-w-md rounded-3xl border border-red-800 bg-slate-900 p-10 shadow-2xl relative overflow-hidden text-center">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-red-500"></div>
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-500/10 text-red-500 mb-6">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-2">Access Denied</h2>
+            <p class="text-slate-400 mb-6">You do not have administrator privileges.</p>
+            <p class="text-sm text-slate-500">Redirecting to application...</p>
+        </div>
+    </div>
+
     <!-- Admin Dashboard -->
-    <div id="admin-dashboard" class="hidden min-h-screen flex flex-col">
+    <div id="admin-dashboard" class="hidden min-h-screen flex-col">
         
         <!-- Top Navigation -->
         <header class="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800">
@@ -291,6 +304,7 @@
         const adminLoginBtn = document.getElementById('admin-login-btn');
         const adminLoginError = document.getElementById('admin-login-error');
         const adminLoginOverlay = document.getElementById('admin-login-overlay');
+        const accessDeniedOverlay = document.getElementById('access-denied-overlay');
         const adminDashboard = document.getElementById('admin-dashboard');
         const adminStatusText = document.getElementById('admin-status-text');
         const adminLogoutBtn = document.getElementById('admin-logout-btn');
@@ -327,34 +341,67 @@
             modal.classList.remove('flex');
         }
 
-    // Firebase RBAC Route Protection
-    const firebaseConfig = {
-        apiKey: "AIzaSyChDSgZ8cuNlDU1WKaN0I5pX70-BSV_elQ",
-        authDomain: "visora-dc4fb.firebaseapp.com",
-        projectId: "visora-dc4fb",
-        storageBucket: "visora-dc4fb.firebasestorage.app",
-        messagingSenderId: "1057790753782",
-        appId: "1:1057790753782:web:1b83fc57821b3b23f265d7",
-        measurementId: "G-HHGQTY3MTW"
-    };
-    firebase.initializeApp(firebaseConfig);
-    firebase.auth().onAuthStateChanged((user) => {
-        if (!user || user.email !== 'saipesaru06@gmail.com') {
-            window.location.replace('index.html');
-        } else {
-            document.getElementById('admin-body').classList.remove('opacity-0');
-        }
-    });
+        // Firebase RBAC Route Protection
+        const firebaseConfig = {
+            apiKey: "AIzaSyChDSgZ8cuNlDU1WKaN0I5pX70-BSV_elQ",
+            authDomain: "visora-dc4fb.firebaseapp.com",
+            projectId: "visora-dc4fb",
+            storageBucket: "visora-dc4fb.firebasestorage.app",
+            messagingSenderId: "1057790753782",
+            appId: "1:1057790753782:web:1b83fc57821b3b23f265d7",
+            measurementId: "G-HHGQTY3MTW"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
-        // Check if admin is already logged in
-        function checkAdminAuth() {
-            const adminToken = localStorage.getItem('adminToken');
-            const adminEmail = localStorage.getItem('adminEmail');
-            if (adminToken && adminEmail) {
-                showAdminDashboard();
-                loadAdminData();
+        auth.onAuthStateChanged((user) => {
+            // Make body visible once auth state is determined
+            document.getElementById('admin-body').classList.remove('opacity-0');
+            
+            if (!user) {
+                // Not logged in -> Show login overlay
+                adminLoginOverlay.classList.remove('hidden');
+                adminLoginOverlay.classList.add('flex');
+                
+                adminDashboard.classList.add('hidden');
+                adminDashboard.classList.remove('flex');
+                
+                accessDeniedOverlay.classList.add('hidden');
+                accessDeniedOverlay.classList.remove('flex');
+            } else if (user.email === 'saipesaru06@gmail.com') {
+                // Admin logged in -> Show dashboard
+                adminLoginOverlay.classList.add('hidden');
+                adminLoginOverlay.classList.remove('flex');
+                
+                accessDeniedOverlay.classList.add('hidden');
+                accessDeniedOverlay.classList.remove('flex');
+                
+                adminDashboard.classList.remove('hidden');
+                adminDashboard.classList.add('flex');
+                
+                adminStatusText.textContent = user.email;
+                
+                // Get token and load data
+                user.getIdToken().then(token => {
+                    localStorage.setItem('adminToken', token);
+                    loadAdminData();
+                });
+            } else {
+                // Unauthorized user -> Show access denied and redirect
+                adminLoginOverlay.classList.add('hidden');
+                adminLoginOverlay.classList.remove('flex');
+                
+                adminDashboard.classList.add('hidden');
+                adminDashboard.classList.remove('flex');
+                
+                accessDeniedOverlay.classList.remove('hidden');
+                accessDeniedOverlay.classList.add('flex');
+                
+                setTimeout(() => {
+                    window.location.href = 'app.html';
+                }, 3000);
             }
-        }
+        });
 
         // Handle admin login
         adminLoginBtn.addEventListener('click', async () => {
@@ -367,48 +414,27 @@
             }
 
             try {
-                const response = await fetch('/admin/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    localStorage.setItem('adminToken', data.token);
-                    localStorage.setItem('adminEmail', data.email);
-                    showAdminDashboard();
-                    loadAdminData();
-                } else {
-                    showAdminError(data.error || 'Invalid credentials');
-                }
+                // Using Firebase Auth for sign in
+                await auth.signInWithEmailAndPassword(email, password);
+                // onAuthStateChanged will handle the UI state transition
             } catch (error) {
-                showAdminError('Login failed. Please try again.');
+                showAdminError(error.message || 'Login failed. Please try again.');
                 console.error(error);
             }
         });
 
         // Handle admin logout
-        adminLogoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('adminToken');
-            localStorage.removeItem('adminEmail');
-            adminLoginOverlay.classList.remove('hidden');
-            adminDashboard.classList.add('hidden');
-            adminDashboard.classList.remove('flex');
-            adminEmailInput.value = '';
-            adminPasswordInput.value = '';
-            adminLoginError.classList.add('hidden');
+        adminLogoutBtn.addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+                localStorage.removeItem('adminToken');
+                adminEmailInput.value = '';
+                adminPasswordInput.value = '';
+                adminLoginError.classList.add('hidden');
+            } catch (error) {
+                console.error('Logout failed:', error);
+            }
         });
-
-        // Show/Hide admin dashboard
-        function showAdminDashboard() {
-            const adminEmail = localStorage.getItem('adminEmail');
-            adminStatusText.textContent = adminEmail;
-            adminLoginOverlay.classList.add('hidden');
-            adminDashboard.classList.remove('hidden');
-            adminDashboard.classList.add('flex'); // Add flex for new layout
-        }
 
         // Show admin error
         function showAdminError(message) {
@@ -420,6 +446,8 @@
         async function loadAdminData() {
             try {
                 const token = localStorage.getItem('adminToken');
+                if (!token) return;
+                
                 const response = await fetch('/admin/data', {
                     method: 'GET',
                     headers: {
@@ -431,11 +459,7 @@
                     const data = await response.json();
                     updateDashboardStats(data);
                 } else if (response.status === 401) {
-                    localStorage.removeItem('adminToken');
-                    localStorage.removeItem('adminEmail');
-                    adminLoginOverlay.classList.remove('hidden');
-                    adminDashboard.classList.add('hidden');
-                    adminDashboard.classList.remove('flex');
+                    await auth.signOut();
                 }
             } catch (error) {
                 console.error('Failed to load admin data:', error);
@@ -617,8 +641,6 @@
             }
         });
 
-        // Initialize on page load
-        window.addEventListener('load', checkAdminAuth);
     </script>
 </body>
 </html>

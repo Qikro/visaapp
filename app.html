@@ -405,6 +405,11 @@
                                 <option value="family" class="bg-slate-900 text-white font-medium">Family Reunification / Dependent Visa</option>
                             </optgroup>
                         </select>
+                        <!-- Dynamic Checklist Container -->
+                        <div id="checklist-container" class="hidden bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 mt-6 shadow-2xl transition-all duration-300 opacity-0">
+                            <h3 id="checklist-header" class="text-lg font-semibold text-white mb-4 pb-2 border-b border-white/10">Required Documents</h3>
+                            <div id="checklist-items" class="space-y-0"></div>
+                        </div>
                     </section>
 
                     <!-- Applicant Information -->
@@ -584,9 +589,21 @@
         ];
 
         const documentRequirements = {
-            'digital-nomad': ['Valid Passport (copy)', 'Proof of Income', 'Bank Statements (last 3 months)', 'Travel Health Insurance', 'Criminal Record Certificate', 'Employment Contract'],
-            'freelance': ['Valid Passport (copy)', 'Proof of Self-Employment', 'Tax Returns (last 2 years)', 'Bank Statements (last 6 months)', 'Professional Portfolio', 'Travel Health Insurance', 'Criminal Record Certificate'],
-            'd7': ['Valid Passport (copy)', 'Proof of Passive Income', 'Bank Statements (last 12 months)', 'Rental Income Documentation', 'Investment Statements', 'Property Deed', 'Criminal Record Certificate', 'Travel Health Insurance']
+            'tourist': ['Valid Passport', 'Completed Application Form', 'Travel Itinerary / Flight Bookings', 'Proof of Accommodation', 'Proof of Financial Means (Bank Statements)', 'Travel Health Insurance'],
+            'visitor': ['Valid Passport', 'Invitation Letter from Host', 'Proof of Relationship', 'Proof of Financial Means', 'Travel Health Insurance', 'Return Flight Ticket'],
+            'standard-work': ['Valid Passport', 'Employment Contract', 'Work Permit / Labor Approval', 'Proof of Qualifications / Degrees', 'Criminal Record Certificate', 'Health Insurance'],
+            'business': ['Valid Passport', 'Letter of Invitation from Host Company', 'Company Letter of Dispatch', 'Proof of Business Registration', 'Proof of Financial Means', 'Travel Itinerary'],
+            'digital-nomad': ['Valid Passport', 'Proof of Remote Employment / Client Contracts', 'Proof of Minimum Monthly Income', 'Comprehensive Health Insurance', 'Clean Criminal Record Certificate'],
+            'freelance': ['Valid Passport', 'Proof of Self-Employment', 'Tax Returns (last 2 years)', 'Bank Statements (last 6 months)', 'Professional Portfolio', 'Travel Health Insurance', 'Clean Criminal Record Certificate'],
+            'working-holiday': ['Valid Passport', 'Proof of Sufficient Funds for Initial Stay', 'Return Ticket or Proof of Funds to Buy One', 'Travel Health Insurance', 'Clean Criminal Record Certificate'],
+            'startup': ['Valid Passport', 'Detailed Business Plan', 'Proof of Innovative Concept / Endorsement', 'Proof of Initial Funding', 'Clean Criminal Record Certificate', 'Health Insurance'],
+            'student': ['Valid Passport', 'Letter of Acceptance from Institution', 'Proof of Financial Support', 'Academic Transcripts', 'Passport-sized Photos'],
+            'research': ['Valid Passport', 'Hosting Agreement from Research Institution', 'Proof of Qualifications / PhD', 'Proof of Financial Means', 'Health Insurance'],
+            'd7': ['Valid Passport', 'Proof of Passive Income', 'Bank Statements (last 12 months)', 'Rental Income Documentation', 'Investment Statements', 'Property Deed', 'Clean Criminal Record Certificate', 'Travel Health Insurance'],
+            'golden': ['Valid Passport', 'Proof of Investment Transfer', 'Clean Criminal Record Certificate', 'Declaration of Compliance with Investment Requirements', 'Health Insurance'],
+            'medical': ['Valid Passport', 'Medical Report from Local Doctor', 'Confirmation from Receiving Hospital/Doctor', 'Proof of Advance Payment or Sufficient Funds', 'Proof of Accommodation for Escort'],
+            'transit': ['Valid Passport', 'Onward Visa for Final Destination', 'Flight Tickets for Onward Journey'],
+            'family': ['Valid Passport', 'Proof of Family Relationship (Marriage/Birth Certificate)', 'Sponsor\'s Residence Permit / ID', 'Proof of Adequate Accommodation', 'Proof of Sufficient Income']
         };
 
         const visaTypeSelect = document.getElementById('visa-type');

@@ -407,7 +407,7 @@
                         </select>
                         <!-- Dynamic Checklist Container -->
                         <div id="checklist-container" class="hidden bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 mt-6 shadow-2xl transition-all duration-300 opacity-0">
-                            <h3 id="checklist-header" class="text-lg font-semibold text-white mb-4 pb-2 border-b border-white/10">Required Documents</h3>
+                            <h3 id="checklist-header" class="text-lg font-semibold text-white mb-4 pb-2 border-b border-white/10"></h3>
                             <div id="checklist-items" class="space-y-0"></div>
                         </div>
                     </section>
@@ -925,17 +925,25 @@
 
         visaTypeSelect.addEventListener('change', (e) => {
             const selectedVisa = e.target.value;
+            const dynamicChecklist = document.getElementById('checklist-container');
             if (selectedVisa) {
                 applicantFormSection.classList.remove('hidden');
                 photoSection.classList.remove('hidden');
                 checklistSection.classList.remove('hidden');
                 uploadSection.classList.remove('hidden');
+                
+                dynamicChecklist.classList.remove('hidden');
+                setTimeout(() => dynamicChecklist.classList.remove('opacity-0'), 10);
+                
                 updateDocumentList(selectedVisa);
             } else {
                 applicantFormSection.classList.add('hidden');
                 photoSection.classList.add('hidden');
                 checklistSection.classList.add('hidden');
                 uploadSection.classList.add('hidden');
+                
+                dynamicChecklist.classList.add('opacity-0');
+                setTimeout(() => dynamicChecklist.classList.add('hidden'), 300);
             }
             uploadedFilesList = []; displayUploadedFiles(); fileCount.classList.add('hidden'); statusMessage.classList.add('hidden'); updateSubmitButton();
         });
@@ -951,6 +959,26 @@
             });
             document.querySelectorAll('#document-list input[type="checkbox"]').forEach(c => c.addEventListener('change', updateChecklistTracker));
             updateChecklistTracker();
+
+            const checklistItems = document.getElementById('checklist-items');
+            if (checklistItems) {
+                checklistItems.innerHTML = '';
+                documents.forEach((doc, index) => {
+                    const row = document.createElement('div');
+                    row.className = 'flex items-center justify-between p-3 border-b border-white/5 last:border-0 hover:bg-white/5 transition-all rounded-lg';
+                    row.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="relative flex items-center justify-center">
+                                <input type="checkbox" id="dyn-doc-${index}" class="peer appearance-none w-5 h-5 border border-white/20 rounded bg-white/5 checked:bg-cyan-500 checked:border-cyan-500 cursor-pointer transition-all" />
+                                <svg class="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                            <label for="dyn-doc-${index}" class="text-white text-sm font-medium cursor-pointer peer-checked:text-cyan-200 transition-colors"></label>
+                        </div>
+                        <button type="button" class="px-4 py-1.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-semibold rounded-full shadow-[0_0_10px_rgba(6,182,212,0.2)] transition-all" onclick="document.getElementById('file-input').click()"></button>
+                    `;
+                    checklistItems.appendChild(row);
+                });
+            }
         }
 
         function updateChecklistTracker() {

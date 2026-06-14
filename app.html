@@ -374,9 +374,36 @@
                             class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white font-medium focus-visible:border-cyan-400 focus-visible:bg-white/10 hover:border-white/20 cursor-pointer transition-all"
                         >
                             <option value="" class="bg-slate-900">Choose a visa type...</option>
-                            <option value="digital-nomad" class="bg-slate-900">Digital Nomad Visa</option>
-                            <option value="freelance" class="bg-slate-900">Freelance Visa</option>
-                            <option value="d7" class="bg-slate-900">D7 Passive Income Visa</option>
+                            
+                            <optgroup label="Tourism & Visiting" class="bg-slate-800 text-cyan-400 font-semibold">
+                                <option value="tourist" class="bg-slate-900 text-white font-medium">Tourist Visa</option>
+                                <option value="visitor" class="bg-slate-900 text-white font-medium">Visitor Visa (Family/Friends)</option>
+                            </optgroup>
+
+                            <optgroup label="Work & Business" class="bg-slate-800 text-cyan-400 font-semibold">
+                                <option value="standard-work" class="bg-slate-900 text-white font-medium">Standard Work / Employment Visa</option>
+                                <option value="business" class="bg-slate-900 text-white font-medium">Business Visa</option>
+                                <option value="digital-nomad" class="bg-slate-900 text-white font-medium">Digital Nomad Visa</option>
+                                <option value="freelance" class="bg-slate-900 text-white font-medium">Freelance Visa</option>
+                                <option value="working-holiday" class="bg-slate-900 text-white font-medium">Working Holiday Visa</option>
+                                <option value="startup" class="bg-slate-900 text-white font-medium">Startup / Entrepreneur Visa</option>
+                            </optgroup>
+
+                            <optgroup label="Education & Research" class="bg-slate-800 text-cyan-400 font-semibold">
+                                <option value="student" class="bg-slate-900 text-white font-medium">Student Visa</option>
+                                <option value="research" class="bg-slate-900 text-white font-medium">Research / Academic Visa</option>
+                            </optgroup>
+
+                            <optgroup label="Investment & Passive Income" class="bg-slate-800 text-cyan-400 font-semibold">
+                                <option value="d7" class="bg-slate-900 text-white font-medium">D7 Passive Income Visa</option>
+                                <option value="golden" class="bg-slate-900 text-white font-medium">Golden / Investor Visa</option>
+                            </optgroup>
+
+                            <optgroup label="Other Categories" class="bg-slate-800 text-cyan-400 font-semibold">
+                                <option value="medical" class="bg-slate-900 text-white font-medium">Medical Treatment Visa</option>
+                                <option value="transit" class="bg-slate-900 text-white font-medium">Transit Visa</option>
+                                <option value="family" class="bg-slate-900 text-white font-medium">Family Reunification / Dependent Visa</option>
+                            </optgroup>
                         </select>
                     </section>
 
@@ -897,7 +924,7 @@
         });
 
         function updateDocumentList(visaType) {
-            const documents = documentRequirements[visaType] || [];
+            const documents = documentRequirements[visaType] || ['Valid Passport (copy)', 'Proof of Identity', 'Travel Health Insurance', 'Completed Application Form'];
             documentList.innerHTML = '';
             documents.forEach((doc, index) => {
                 const item = document.createElement('div');

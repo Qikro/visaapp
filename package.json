@@ -10,7 +10,8 @@
     "dotenv": "^16.1.4",
     "express": "^4.18.2",
     "firebase-admin": "^14.0.0",
-    "paytm-pg-node-sdk": "^1.0.4",
+    "paytm-pg-node-sdk": "^1.0.6",
+    "paytmchecksum": "^1.5.1",
     "stripe": "^12.14.0"
   },
   "devDependencies": {

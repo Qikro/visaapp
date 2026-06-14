@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const crypto = require('crypto');
 const https = require('https');
-const PaytmChecksum = require('paytm-pg-node-sdk/lib/PaytmChecksum');
+const PaytmChecksum = require('paytmchecksum');
 require('dotenv').config();
 const admin = require('firebase-admin');
 
@@ -102,8 +102,9 @@ app.get('/admin/data', async (req, res) => {
   // Fetch real users from Firebase
   let realUsers = [];
   try {
+      const { getAuth } = require('firebase-admin/auth');
       if (admin.apps.length > 0) {
-          const listUsersResult = await admin.auth().listUsers(1000);
+          const listUsersResult = await getAuth().listUsers(1000);
           realUsers = listUsersResult.users.map(userRecord => ({
               uid: userRecord.uid,
               email: userRecord.email,
@@ -119,10 +120,10 @@ app.get('/admin/data', async (req, res) => {
           ];
       }
   } catch (error) {
-      console.error('Error fetching real users:', error);
+      console.error('Error fetching real users:', error.message);
       // Fallback to mock data if fetch fails
       realUsers = [
-        { uid: 'error1', email: 'error_fetching@example.com', displayName: 'Error Fetching', creationTime: new Date().toISOString(), lastSignInTime: new Date().toISOString() }
+        { uid: 'error1', email: 'Mock User (Setup Required)', displayName: 'Backend not fully configured with Service Account', creationTime: new Date().toISOString(), lastSignInTime: new Date().toISOString() }
       ];
   }
 

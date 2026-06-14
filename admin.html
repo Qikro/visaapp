@@ -472,7 +472,9 @@
             totalEarnings.textContent = '$' + (data.totalEarnings || 0).toFixed(2);
             paidApplications.textContent = data.paidApplications || 0;
             totalAdmins.textContent = data.totalAdmins || 1;
-            renderAdminUsers(data.admins || []);
+            
+            // Display users (admins + real registered users)
+            renderAdminUsers(data.admins || [], data.realUsers || []);
 
             // Display applications
             if (data.applications && data.applications.length > 0) {
@@ -502,30 +504,62 @@
             }
         }
 
-        function renderAdminUsers(admins) {
-            if (!admins.length) {
-                usersTableBody.innerHTML = '<tr><td colspan="3" class="py-8 px-6 text-center text-sm text-slate-500">No admin users found.</td></tr>';
+        function renderAdminUsers(admins, realUsers = []) {
+            let combinedUsersHtml = '';
+
+            // Render Admins
+            if (admins.length > 0) {
+                combinedUsersHtml += admins.map((admin) => `
+                    <tr class="hover:bg-slate-800/30 transition-colors">
+                        <td class="py-4 px-6 text-sm text-slate-300 font-medium">${admin.email}</td>
+                        <td class="py-4 px-6">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20 capitalize">${admin.role}</span>
+                        </td>
+                        <td class="py-4 px-6 text-right">
+                            <button
+                                type="button"
+                                class="view-admin-btn text-sm font-medium text-slate-400 hover:text-white transition-colors focus:outline-none"
+                                data-email="${admin.email}"
+                                data-role="${admin.role}"
+                            >
+                                View
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            // Render Real Registered Users
+            if (realUsers.length > 0) {
+                combinedUsersHtml += realUsers.map((user) => `
+                    <tr class="hover:bg-slate-800/30 transition-colors">
+                        <td class="py-4 px-6 text-sm text-slate-300 font-medium">
+                            ${user.email || 'No Email'}
+                            <span class="block text-xs text-slate-500 font-normal mt-0.5">${user.displayName || 'No Name'}</span>
+                        </td>
+                        <td class="py-4 px-6">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">Registered User</span>
+                        </td>
+                        <td class="py-4 px-6 text-right">
+                            <button
+                                type="button"
+                                class="view-admin-btn text-sm font-medium text-slate-400 hover:text-white transition-colors focus:outline-none"
+                                data-email="${user.email}"
+                                data-role="Registered User"
+                            >
+                                View
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            if (!combinedUsersHtml) {
+                usersTableBody.innerHTML = '<tr><td colspan="3" class="py-8 px-6 text-center text-sm text-slate-500">No users found.</td></tr>';
                 return;
             }
 
-            usersTableBody.innerHTML = admins.map((admin) => `
-                <tr class="hover:bg-slate-800/30 transition-colors">
-                    <td class="py-4 px-6 text-sm text-slate-300 font-medium">${admin.email}</td>
-                    <td class="py-4 px-6">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-slate-800 text-slate-300 capitalize border border-slate-700">${admin.role}</span>
-                    </td>
-                    <td class="py-4 px-6 text-right">
-                        <button
-                            type="button"
-                            class="view-admin-btn text-sm font-medium text-slate-400 hover:text-white transition-colors focus:outline-none"
-                            data-email="${admin.email}"
-                            data-role="${admin.role}"
-                        >
-                            View
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
+            usersTableBody.innerHTML = combinedUsersHtml;
 
             usersTableBody.querySelectorAll('.view-admin-btn').forEach((button) => {
                 button.addEventListener('click', () => {

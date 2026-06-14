@@ -9,8 +9,9 @@
   "dependencies": {
     "dotenv": "^16.1.4",
     "express": "^4.18.2",
-    "stripe": "^12.14.0",
-    "paytm-pg-node-sdk": "^1.0.4"
+    "firebase-admin": "^14.0.0",
+    "paytm-pg-node-sdk": "^1.0.4",
+    "stripe": "^12.14.0"
   },
   "devDependencies": {
     "http-server": "^14.1.1"

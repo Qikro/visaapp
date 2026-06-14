@@ -116,10 +116,13 @@
                     <span class="font-medium">Email address</span>
                     <input id="login-email" type="email" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" placeholder="you@example.com" autocomplete="email" />
                 </label>
-                <label class="block text-sm text-slate-300">
+                <label id="auth-password-label" class="block text-sm text-slate-300">
                     <span class="font-medium">Password</span>
                     <input id="login-password" type="password" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" placeholder="••••••••" autocomplete="current-password" />
                 </label>
+                <div id="forgot-password-container" class="text-right mt-1">
+                    <button id="forgot-password-link" type="button" class="text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none">Forgot Password?</button>
+                </div>
                 <label id="auth-confirm-password-label" class="block text-sm text-slate-300 hidden">
                     <span class="font-medium">Confirm password</span>
                     <input id="auth-confirm-password" type="password" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 focus-visible:border-blue-400 focus-visible:outline-none" placeholder="••••••••" autocomplete="new-password" />
@@ -658,6 +661,7 @@
         let isModalOpen = false;
         let currentApplicationId = null;
         let isSignUpMode = false;
+        let isForgotPasswordMode = false;
 
         const firebaseConfig = {
             apiKey: "AIzaSyChDSgZ8cuNlDU1WKaN0I5pX70-BSV_elQ",
@@ -671,6 +675,10 @@
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
+        
+        // Enforce compulsory sign-in on fresh entry
+        auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
+
         const googleProvider = new firebase.auth.GoogleAuthProvider();
         const githubProvider = new firebase.auth.GithubAuthProvider();
         const isAuthEnvSupported = ['http:', 'https:', 'chrome-extension:'].includes(location.protocol);
@@ -804,7 +812,14 @@
 
         authSigninToggle.addEventListener('click', () => setAuthMode(false));
         authSignupToggle.addEventListener('click', () => setAuthMode(true));
-        authModeLink.addEventListener('click', () => setAuthMode(!isSignUpMode));
+        authModeLink.addEventListener('click', () => {
+            if (isForgotPasswordMode) {
+                setAuthMode(false);
+            } else {
+                setAuthMode(!isSignUpMode);
+            }
+        });
+        document.getElementById('forgot-password-link').addEventListener('click', setForgotPasswordMode);
         authGoogleBtn.addEventListener('click', () => handleOAuthSignUp('Google'));
         authGithubBtn.addEventListener('click', () => handleOAuthSignUp('GitHub')); 
         paymentPayBtn.addEventListener('click', handlePaymentSubmit); 
@@ -1058,8 +1073,36 @@
             return data.applicationId;
         }
 
+        function setForgotPasswordMode() {
+            isForgotPasswordMode = true;
+            isSignUpMode = false;
+            authActionTitle.textContent = 'Reset your password';
+            authActionDescription.textContent = 'Enter your email to receive a reset link, or sign in below.';
+            
+            authNameLabel.classList.add('hidden');
+            document.getElementById('auth-password-label').classList.add('hidden');
+            authConfirmPasswordLabel.classList.add('hidden');
+            document.getElementById('forgot-password-container').classList.add('hidden');
+            
+            authSigninToggle.classList.add('hidden');
+            authSignupToggle.classList.add('hidden');
+            
+            authSubmitBtn.textContent = 'Send Reset Link';
+            
+            authFooterText.textContent = 'Remembered your password?';
+            authModeLink.textContent = 'Sign in instead';
+            loginErrorMessage.classList.add('hidden');
+        }
+
         function setAuthMode(signUp) {
+            isForgotPasswordMode = false;
             isSignUpMode = signUp;
+            
+            authSigninToggle.classList.remove('hidden');
+            authSignupToggle.classList.remove('hidden');
+            document.getElementById('auth-password-label').classList.remove('hidden');
+            document.getElementById('forgot-password-container').classList.toggle('hidden', signUp);
+
             authNameLabel.classList.toggle('hidden', !signUp);
             authConfirmPasswordLabel.classList.toggle('hidden', !signUp);
             authSigninToggle.classList.toggle('bg-blue-500', !signUp);
@@ -1084,6 +1127,23 @@
             if (!isAuthEnvSupported) {
                 loginErrorMessage.textContent = 'Firebase auth requires a local server or HTTPS origin. Please run this app from http://localhost or a deployed URL.';
                 loginErrorMessage.classList.remove('hidden');
+                return;
+            }
+
+            if (isForgotPasswordMode) {
+                if (!email) {
+                    loginErrorMessage.textContent = 'Please enter your email address to reset password.';
+                    loginErrorMessage.classList.remove('hidden');
+                    return;
+                }
+                try {
+                    await auth.sendPasswordResetEmail(email);
+                    showStatus('Password reset email sent. Please check your inbox.', 'success');
+                    setAuthMode(false); // return to sign in
+                } catch (error) {
+                    loginErrorMessage.textContent = error.message;
+                    loginErrorMessage.classList.remove('hidden');
+                }
                 return;
             }
 

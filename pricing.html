@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visaura - Choose Your Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sapphire: '#0a192f',
+                            midnight: '#020617',
+                            gold: '#d4af37',
+                            goldLight: '#f3e5ab',
+                            goldDark: '#aa8c2c',
+                            silver: '#e2e8f0',
+                        }
+                    },
+                    backgroundImage: {
+                        'sapphire-gradient': 'linear-gradient(135deg, #0a192f 0%, #020617 100%)',
+                        'gold-gradient': 'linear-gradient(to right, #aa8c2c, #d4af37, #f3e5ab, #d4af37, #aa8c2c)',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out infinite 3s',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'data-fall': 'dataFall 8s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        dataFall: {
+                            '0%': { transform: 'translateY(-150px)', opacity: '0' },
+                            '10%': { opacity: '1' },
+                            '90%': { opacity: '1' },
+                            '100%': { transform: 'translateY(100vh)', opacity: '0' },
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        
+        /* Dashboard Styles */
+        .data-stream {
+            position: absolute;
+            top: -150px;
+            width: 1px;
+            height: 150px;
+            background: linear-gradient(to bottom, transparent, rgba(6,182,212,0.8), transparent);
+            animation: dataFall 6s linear infinite;
+        }
+
+        /* Glass Cards */
+        .glass-card-standard {
+            background: rgba(10, 25, 47, 0.4); 
+            backdrop-filter: blur(24px); 
+            -webkit-backdrop-filter: blur(24px); 
+            border: 1px solid rgba(226, 232, 240, 0.1); 
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7), 0 0 20px rgba(226, 232, 240, 0.02) inset;
+        }
+
+        .glass-card-premium {
+            background: rgba(10, 25, 47, 0.5); 
+            backdrop-filter: blur(30px); 
+            -webkit-backdrop-filter: blur(30px); 
+            position: relative;
+        }
+        
+        .glass-card-premium::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 1.5rem;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(6,182,212,0.8), rgba(212,175,55,0.8));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* Glowing Text */
+        .text-glow {
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-gold-pulse {
+            background: linear-gradient(135deg, #0a192f 0%, #aa8c2c 100%); position: relative; overflow: hidden; z-index: 1; transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-gold-pulse::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #0a192f 0%, #d4af37 100%); opacity: 0; z-index: -1; transition: opacity 0.3s ease;
+        }
+        .btn-gold-pulse:hover::before { opacity: 1; }
+        .btn-gold-pulse:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.4); }
+
+    </style>
+</head>
+<body class="bg-[#020617] text-slate-100 min-h-screen relative overflow-hidden flex flex-col">
+
+    <!-- Immersive Deep Midnight-Blue Environment with Cinematic Lighting -->
+    <div class="absolute inset-0 pointer-events-none z-0">
+        <!-- Volumetric lighting center -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[700px] bg-cyan-900/10 rounded-full blur-[150px]"></div>
+        <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-blue-900/10 rounded-full blur-[120px]"></div>
+        
+        <!-- Glowing cyan data streams -->
+        <div class="data-stream" style="left: 10%; animation-delay: 0s; animation-duration: 5s;"></div>
+        <div class="data-stream" style="left: 30%; animation-delay: 2.5s; animation-duration: 7s;"></div>
+        <div class="data-stream" style="left: 50%; animation-delay: 1.2s; animation-duration: 6s;"></div>
+        <div class="data-stream" style="left: 70%; animation-delay: 4.8s; animation-duration: 8s;"></div>
+        <div class="data-stream" style="left: 90%; animation-delay: 3.1s; animation-duration: 5.5s;"></div>
+    </div>
+
+    <!-- Navigation (Minimal) -->
+    <nav class="relative z-50 w-full pt-8 px-6 lg:px-8 flex justify-between items-center max-w-7xl mx-auto">
+        <a href="index.html" class="flex items-center gap-3 group">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold text-xl shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+                V
+            </div>
+            <span class="text-2xl font-extrabold text-white tracking-tight">Visaura</span>
+        </a>
+        <a href="app.html" class="text-sm font-medium text-cyan-100/70 hover:text-white transition-colors">Back to Dashboard</a>
+    </nav>
+
+    <main class="flex-grow relative z-10 flex flex-col items-center justify-center px-4 sm:px-6 py-12">
+        
+        <!-- Header -->
+        <div class="text-center mb-16 relative">
+            <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-32 h-32 bg-cyan-500/20 rounded-full blur-2xl animate-pulse-slow"></div>
+            <h1 class="text-5xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-cyan-100 to-white bg-clip-text text-transparent text-glow tracking-tight">
+                Choose Your Plan
+            </h1>
+            <p class="text-lg text-cyan-200/60 font-light tracking-wide max-w-xl mx-auto">
+                Transparent pricing for your global mobility.
+            </p>
+        </div>
+
+        <!-- Pricing Cards Container -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto w-full relative">
+            
+            <!-- Left Card: Free Tier -->
+            <div class="glass-card-standard rounded-3xl p-8 sm:p-10 flex flex-col items-center text-center transform transition-transform hover:-translate-y-2 duration-300 relative overflow-hidden group">
+                <!-- 3D Silver Icon (CSS Representation) -->
+                <div class="w-24 h-24 mb-8 relative flex items-center justify-center animate-float">
+                    <div class="absolute inset-0 bg-gradient-to-br from-slate-300 to-slate-600 rounded-2xl transform rotate-12 shadow-xl opacity-20"></div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-400 rounded-2xl transform -rotate-6 shadow-[0_10px_20px_rgba(0,0,0,0.5),inset_0_0_15px_rgba(255,255,255,0.8)] backdrop-blur-md flex items-center justify-center border border-white/40">
+                        <svg class="w-10 h-10 text-slate-700 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl font-bold text-white mb-2 tracking-wide">Free Tier</h2>
+                <div class="flex items-baseline justify-center gap-1 mb-6">
+                    <span class="text-4xl font-bold text-slate-200">$0</span>
+                    <span class="text-sm text-slate-500 font-medium">/forever</span>
+                </div>
+                
+                <p class="text-sm text-slate-400 mb-8 border-b border-white/10 pb-8 w-full">Perfect for individuals starting their visa journey.</p>
+
+                <ul class="space-y-4 text-sm text-slate-300 font-medium text-left w-full flex-grow">
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-cyan-500/50 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Basic Document Organization
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-cyan-500/50 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Standard Export
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-cyan-500/50 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Watermarked Output
+                    </li>
+                    <li class="flex items-center gap-3 opacity-40">
+                        <svg class="w-5 h-5 text-slate-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        AI-Powered Verification
+                    </li>
+                </ul>
+
+                <button class="w-full mt-10 py-3.5 px-6 border border-white/20 text-white font-semibold rounded-xl hover:bg-white/5 hover:border-white/40 transition-all duration-300">
+                    Get Started Free
+                </button>
+            </div>
+
+            <!-- Right Card: Premium Per-Compile -->
+            <div class="glass-card-premium rounded-3xl p-8 sm:p-10 flex flex-col items-center text-center transform transition-transform hover:-translate-y-2 duration-300 shadow-[0_30px_60px_-12px_rgba(6,182,212,0.2)]">
+                <!-- Highlight Badge -->
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-cyan-500 to-blue-600 text-xs font-bold text-white rounded-full uppercase tracking-widest shadow-[0_0_15px_rgba(6,182,212,0.5)]">Most Popular</div>
+
+                <!-- 3D Golden Holographic Passport Icon (CSS Representation) -->
+                <div class="w-24 h-24 mb-8 relative flex items-center justify-center animate-float-delayed">
+                    <div class="absolute inset-0 bg-gradient-to-br from-brand-gold to-brand-goldDark rounded-xl transform -rotate-12 shadow-[0_15px_30px_rgba(212,175,55,0.3)] opacity-40"></div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-brand-goldLight to-brand-gold rounded-xl transform rotate-6 shadow-[0_10px_20px_rgba(0,0,0,0.5),inset_0_0_20px_rgba(255,255,255,0.6)] backdrop-blur-xl flex flex-col items-center justify-center border border-white/50 overflow-hidden">
+                        <div class="w-full h-[1px] bg-white/40 absolute top-[30%]"></div>
+                        <svg class="w-8 h-8 text-brand-sapphire drop-shadow-sm mb-1" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path></svg>
+                        <div class="w-6 h-1 bg-brand-sapphire/80 rounded-full"></div>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl font-bold text-brand-goldLight mb-2 tracking-wide text-glow">Pay Per Compile</h2>
+                <div class="flex items-baseline justify-center gap-1 mb-6">
+                    <span class="text-5xl font-bold text-white text-glow">$10</span>
+                    <span class="text-sm text-cyan-200/60 font-medium">/compile</span>
+                </div>
+                
+                <p class="text-sm text-cyan-100/70 mb-8 border-b border-cyan-500/20 pb-8 w-full">Professional verification and instant export for peace of mind.</p>
+
+                <ul class="space-y-4 text-sm text-white font-medium text-left w-full flex-grow">
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-brand-gold flex-shrink-0 drop-shadow-[0_0_5px_rgba(212,175,55,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        AI-Powered Document Verification
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-brand-gold flex-shrink-0 drop-shadow-[0_0_5px_rgba(212,175,55,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Priority Instant Export
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-brand-gold flex-shrink-0 drop-shadow-[0_0_5px_rgba(212,175,55,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Bank-Grade Encryption
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-brand-gold flex-shrink-0 drop-shadow-[0_0_5px_rgba(212,175,55,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Zero Watermarks
+                    </li>
+                </ul>
+
+                <button class="btn-gold-pulse w-full mt-10 py-4 px-6 text-white font-bold rounded-xl shadow-[0_0_20px_rgba(212,175,55,0.3)] tracking-wide flex items-center justify-center gap-2">
+                    Go Premium
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+            </div>
+            
+        </div>
+        
+        <!-- Trust Indicators -->
+        <div class="mt-20 flex flex-col sm:flex-row items-center justify-center gap-8 opacity-60">
+            <div class="flex items-center gap-2 text-sm font-medium text-slate-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                Secure SSL Payment
+            </div>
+            <div class="hidden sm:block w-1.5 h-1.5 rounded-full bg-slate-600"></div>
+            <div class="flex items-center gap-2 text-sm font-medium text-slate-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                Data Privacy Guarantee
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>

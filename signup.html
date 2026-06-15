@@ -387,7 +387,7 @@
                 
                 <div style="text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
                     <p style="font-size: 0.9rem; color: #cbd5e1;">
-                        Already have an account? <a href="index.html" style="color: #0d9488; text-decoration: none; font-weight: 600;">Sign In</a>
+                        Already have an account? <a href="app.html" style="color: #0d9488; text-decoration: none; font-weight: 600;">Sign In</a>
                     </p>
                 </div>
             </div>
@@ -472,7 +472,7 @@
             const provider = new firebase.auth.GoogleAuthProvider();
             try {
                 await auth.signInWithPopup(provider);
-                window.location.href = 'index.html'; // Redirect to dashboard/home on success
+                window.location.href = 'compiler.html'; // Redirect to dashboard/home on success
             } catch (error) {
                 console.error("Google login failed", error);
                 alert("Login failed: " + error.message);
@@ -483,36 +483,11 @@
             const provider = new firebase.auth.GithubAuthProvider();
             try {
                 await auth.signInWithPopup(provider);
-                window.location.href = 'index.html'; // Redirect to dashboard/home on success
+                window.location.href = 'compiler.html'; // Redirect to dashboard/home on success
             } catch (error) {
                 console.error("GitHub login failed", error);
                 alert("Login failed: " + error.message);
             }
-        });
-    </script>
-</body>
-</html>
-        // Form Submission
-        document.getElementById('visauraForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = document.querySelector('.submit-btn');
-            const originalText = btn.innerText;
-            
-            btn.innerText = 'Creating Account...';
-            btn.style.opacity = '0.8';
-            btn.style.pointerEvents = 'none';
-
-            // Simulate API Call
-            setTimeout(() => {
-                alert('Welcome to Visaura! Your account has been created.');
-                btn.innerText = originalText;
-                btn.style.opacity = '1';
-                btn.style.pointerEvents = 'auto';
-                
-                // Reset form and go back to step 1
-                this.reset();
-                goToStep(1);
-            }, 1500);
         });
     </script>
 </body>

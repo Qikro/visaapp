@@ -36,16 +36,8 @@
 <body class="min-h-screen flex items-center justify-center p-4">
     <!-- Loading Spinner -->
     <div id="loading-spinner" class="flex flex-col items-center justify-center">
-        <div class="w-12 h-12 border-4 border-brand-sapphire border-t-brand-gold rounded-full animate-spin"></div>
-    </div>
-
-    <!-- Main Content -->
-    <div id="main-content" class="text-center hidden">
-        <h1 class="text-4xl font-serif text-brand-gold mb-4">Dashboard</h1>
-        <p class="text-xl">Welcome to your Visaura Dashboard.</p>
-        <button id="logout-btn" class="mt-8 px-6 py-2 border border-brand-gold text-brand-gold rounded hover:bg-brand-gold hover:text-brand-midnight transition-colors">
-            Sign Out
-        </button>
+        <div class="w-12 h-12 border-4 border-brand-sapphire border-t-brand-gold rounded-full animate-spin mb-4"></div>
+        <p class="text-lg text-brand-gold">Redirecting to your workspace...</p>
     </div>
 
     <!-- Firebase SDKs -->
@@ -71,13 +63,8 @@
             if (!user) {
                 window.location.href = 'app.html';
             } else {
-                document.getElementById('loading-spinner').classList.add('hidden');
-                document.getElementById('main-content').classList.remove('hidden');
+                window.location.replace('compiler.html');
             }
-        });
-
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            auth.signOut();
         });
     </script>
 </body>

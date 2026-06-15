@@ -394,6 +394,8 @@
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script>
         // Progressive Profiling - Form Step Logic
         function goToStep(stepNumber) {
@@ -452,9 +454,65 @@
                 goToStep(1);
             }, 1500);
         });
+
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyChDSgZ8cuNlDU1WKaN0I5pX70-BSV_elQ",
+            authDomain: "visora-dc4fb.firebaseapp.com",
+            projectId: "visora-dc4fb",
+            storageBucket: "visora-dc4fb.firebasestorage.app",
+            messagingSenderId: "1057790753782",
+            appId: "1:1057790753782:web:1b83fc57821b3b23f265d7",
+            measurementId: "G-HHGQTY3MTW"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        document.getElementById('google-signup-btn').addEventListener('click', async () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            try {
+                await auth.signInWithPopup(provider);
+                window.location.href = 'index.html'; // Redirect to dashboard/home on success
+            } catch (error) {
+                console.error("Google login failed", error);
+                alert("Login failed: " + error.message);
+            }
+        });
+
+        document.getElementById('github-signup-btn').addEventListener('click', async () => {
+            const provider = new firebase.auth.GithubAuthProvider();
+            try {
+                await auth.signInWithPopup(provider);
+                window.location.href = 'index.html'; // Redirect to dashboard/home on success
+            } catch (error) {
+                console.error("GitHub login failed", error);
+                alert("Login failed: " + error.message);
+            }
+        });
     </script>
 </body>
-</html>       }, 1500);
+</html>
+        // Form Submission
+        document.getElementById('visauraForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.querySelector('.submit-btn');
+            const originalText = btn.innerText;
+            
+            btn.innerText = 'Creating Account...';
+            btn.style.opacity = '0.8';
+            btn.style.pointerEvents = 'none';
+
+            // Simulate API Call
+            setTimeout(() => {
+                alert('Welcome to Visaura! Your account has been created.');
+                btn.innerText = originalText;
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+                
+                // Reset form and go back to step 1
+                this.reset();
+                goToStep(1);
+            }, 1500);
         });
     </script>
 </body>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Visaura</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sapphire: '#0a192f',
+                            midnight: '#020617',
+                            gold: '#d4af37',
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body {
+            background-color: #020617;
+            background-image: radial-gradient(circle at 50% 50%, #0a192f 0%, #020617 100%);
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="text-center">
+        <h1 class="text-4xl font-serif text-brand-gold mb-4">Dashboard</h1>
+        <p class="text-xl">Welcome to your Visaura Dashboard.</p>
+        <button id="logout-btn" class="mt-8 px-6 py-2 border border-brand-gold text-brand-gold rounded hover:bg-brand-gold hover:text-brand-midnight transition-colors">
+            Sign Out
+        </button>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyChDSgZ8cuNlDU1WKaN0I5pX70-BSV_elQ",
+            authDomain: "visora-dc4fb.firebaseapp.com",
+            projectId: "visora-dc4fb",
+            storageBucket: "visora-dc4fb.firebasestorage.app",
+            messagingSenderId: "1057790753782",
+            appId: "1:1057790753782:web:1b83fc57821b3b23f265d7",
+            measurementId: "G-HHGQTY3MTW"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const auth = firebase.auth();
+
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = 'app.html';
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            auth.signOut();
+        });
+    </script>
+</body>
+</html>

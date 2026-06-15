@@ -136,11 +136,11 @@
             </div>
 
             <div class="space-y-4 mb-8">
-                <button class="w-full btn-metal py-3.5 rounded-xl flex items-center justify-center gap-3 text-white font-medium text-sm transition-all hover:bg-white/5">
+                <button id="google-login-btn" type="button" class="w-full btn-metal py-3.5 rounded-xl flex items-center justify-center gap-3 text-white font-medium text-sm transition-all hover:bg-white/5">
                     <svg class="w-5 h-5 opacity-90" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#f3e5ab"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#d4af37"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#aa8c2c"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#f3e5ab"/></svg>
                     Continue with Google
                 </button>
-                <button class="w-full btn-metal py-3.5 rounded-xl flex items-center justify-center gap-3 text-white font-medium text-sm transition-all hover:bg-white/5">
+                <button id="github-login-btn" type="button" class="w-full btn-metal py-3.5 rounded-xl flex items-center justify-center gap-3 text-white font-medium text-sm transition-all hover:bg-white/5">
                     <svg class="w-5 h-5 text-brand-goldLight opacity-90" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" /></svg>
                     Continue with GitHub
                 </button>
@@ -161,13 +161,17 @@
                 <div>
                     <label class="block text-sm font-medium text-brand-silver/80 mb-1.5" for="email">Work Email</label>
                     <input id="email" type="email" class="premium-input w-full px-4 py-3.5 rounded-xl text-sm placeholder-brand-silver/40" placeholder="jane@company.com" required>
+                    <p id="email-error" class="text-red-400 text-xs mt-1.5 hidden"></p>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-brand-silver/80 mb-1.5" for="password">Secure Password</label>
                     <input id="password" type="password" class="premium-input w-full px-4 py-3.5 rounded-xl text-sm tracking-widest placeholder-brand-silver/40" placeholder="••••••••" required>
+                    <p id="password-error" class="text-red-400 text-xs mt-1.5 hidden"></p>
                 </div>
                 
+                <p id="general-error" class="text-red-400 text-xs hidden"></p>
+
                 <div class="flex items-start gap-3 pt-2">
                     <input id="terms" type="checkbox" class="w-4 h-4 mt-0.5 rounded border border-brand-silver/30 bg-transparent text-brand-goldLight focus:ring-brand-goldLight focus:ring-1 focus:outline-none appearance-none checked:bg-brand-goldLight checked:border-transparent flex items-center justify-center after:content-[''] after:hidden checked:after:block after:w-1.5 after:h-2.5 after:border-r-2 after:border-b-2 after:border-[#020617] after:rotate-45 after:-translate-y-0.5 cursor-pointer" required>
                     <label for="terms" class="text-xs text-brand-silver/60 leading-relaxed">
@@ -201,28 +205,93 @@
             appId: "1:1057790753782:web:1b83fc57821b3b23f265d7",
             measurementId: "G-HHGQTY3MTW"
         };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const auth = firebase.auth();
 
-        document.getElementById('google-login-btn').addEventListener('click', async () => {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            try {
-                await auth.signInWithPopup(provider);
-                window.location.href = 'index.html'; // Redirect to dashboard/home on success
-            } catch (error) {
-                console.error("Google login failed", error);
-                alert("Login failed: " + error.message);
+        // State Management: Redirect on successful login
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                window.location.href = 'dashboard.html';
             }
         });
 
+        // Helper to clear errors
+        const clearErrors = () => {
+            document.getElementById('email-error').classList.add('hidden');
+            document.getElementById('password-error').classList.add('hidden');
+            document.getElementById('general-error').classList.add('hidden');
+        };
+
+        // Helper to show errors
+        const showError = (code, message) => {
+            let friendlyMessage = message;
+            
+            // Simplify common Firebase error messages
+            if (code === 'auth/email-already-in-use') friendlyMessage = 'This email is already registered.';
+            if (code === 'auth/invalid-email') friendlyMessage = 'Please enter a valid email address.';
+            if (code === 'auth/weak-password') friendlyMessage = 'Password should be at least 6 characters.';
+            
+            if (code.includes('email')) {
+                const emailErr = document.getElementById('email-error');
+                emailErr.textContent = friendlyMessage;
+                emailErr.classList.remove('hidden');
+            } else if (code.includes('password')) {
+                const passErr = document.getElementById('password-error');
+                passErr.textContent = friendlyMessage;
+                passErr.classList.remove('hidden');
+            } else {
+                const genErr = document.getElementById('general-error');
+                genErr.textContent = friendlyMessage;
+                genErr.classList.remove('hidden');
+            }
+        };
+
+        // Google Auth
+        document.getElementById('google-login-btn').addEventListener('click', async () => {
+            clearErrors();
+            const provider = new firebase.auth.GoogleAuthProvider();
+            try {
+                await auth.signInWithPopup(provider);
+            } catch (error) {
+                console.error("Google login failed", error);
+                showError(error.code, error.message);
+            }
+        });
+
+        // GitHub Auth
         document.getElementById('github-login-btn').addEventListener('click', async () => {
+            clearErrors();
             const provider = new firebase.auth.GithubAuthProvider();
             try {
                 await auth.signInWithPopup(provider);
-                window.location.href = 'index.html'; // Redirect to dashboard/home on success
             } catch (error) {
                 console.error("GitHub login failed", error);
-                alert("Login failed: " + error.message);
+                showError(error.code, error.message);
+            }
+        });
+
+        // Email/Password Registration
+        document.getElementById('visauraForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearErrors();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const fullName = document.getElementById('fullName').value;
+            
+            try {
+                // Register the user
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                
+                // Update profile with Full Name
+                if (userCredential.user) {
+                    await userCredential.user.updateProfile({ displayName: fullName });
+                }
+            } catch (error) {
+                console.error("Registration failed", error);
+                showError(error.code, error.message);
             }
         });
     </script>

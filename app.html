@@ -255,8 +255,12 @@
             try {
                 await auth.signInWithPopup(provider);
             } catch (error) {
-                console.error("Google login failed", error);
-                showError(error.code, error.message);
+                if (error.code === 'auth/popup-closed-by-user') {
+                    console.log("Google login popup closed by user.");
+                } else {
+                    console.error("Google login failed", error);
+                    showError(error.code, error.message);
+                }
             }
         });
 
@@ -267,8 +271,12 @@
             try {
                 await auth.signInWithPopup(provider);
             } catch (error) {
-                console.error("GitHub login failed", error);
-                showError(error.code, error.message);
+                if (error.code === 'auth/popup-closed-by-user') {
+                    console.log("GitHub login popup closed by user.");
+                } else {
+                    console.error("GitHub login failed", error);
+                    showError(error.code, error.message);
+                }
             }
         });
 

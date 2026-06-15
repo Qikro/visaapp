@@ -280,6 +280,15 @@
                             <input id="auth-confirm-password" type="password" class="premium-input w-full pl-11 pr-4 py-3.5 rounded-xl text-sm tracking-widest placeholder-brand-silver/30" placeholder="••••••••">
                         </div>
 
+                        <div id="auth-terms-label" class="premium-input-container hidden pt-2 pb-1">
+                            <div class="flex items-center gap-3">
+                                <input id="auth-terms" type="checkbox" class="w-4 h-4 rounded border border-brand-silver/30 bg-transparent text-brand-goldLight focus:ring-brand-goldLight focus:ring-1 focus:outline-none appearance-none checked:bg-brand-goldLight checked:border-transparent flex items-center justify-center after:content-[''] after:hidden checked:after:block after:w-1.5 after:h-2.5 after:border-r-2 after:border-b-2 after:border-[#020617] after:rotate-45 after:-translate-y-0.5 cursor-pointer">
+                                <label for="auth-terms" class="text-xs text-brand-silver/60">
+                                    I agree to the <a href="terms.html" class="text-brand-goldLight hover:underline font-medium">Terms & Conditions</a> and <a href="privacy.html" class="text-brand-goldLight hover:underline font-medium">Privacy Policy</a>
+                                </label>
+                            </div>
+                        </div>
+
                         <div id="forgot-password-container" class="flex justify-end pt-1">
                             <button type="button" id="forgot-password-link" class="text-xs font-medium text-brand-silver/60 hover:text-brand-goldLight transition-colors">Forgot Password?</button>
                         </div>
@@ -734,6 +743,7 @@
             authPhoneLabel.classList.toggle('hidden', !signUp);
             authNationalityLabel.classList.toggle('hidden', !signUp);
             authConfirmPasswordLabel.classList.toggle('hidden', !signUp);
+            document.getElementById('auth-terms-label').classList.toggle('hidden', !signUp);
             
             const activeClass = "flex-1 py-3 rounded-xl bg-brand-sapphire border border-brand-gold text-brand-goldLight font-semibold shadow-[0_0_15px_rgba(212,175,55,0.15)] transition-all";
             const inactiveClass = "flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white/70 font-semibold hover:bg-white/10 hover:text-brand-goldLight transition-all";
@@ -745,7 +755,7 @@
             authActionDescription.textContent = signUp ? 'Use your email or social account to sign up.' : 'Access your visa application dashboard.';
             document.getElementById('auth-submit-text').textContent = signUp ? 'Sign Up' : 'Sign In';
             authFooterText.textContent = signUp ? 'Already have an account?' : 'New here?';
-            authModeLink.textContent = signUp ? 'Sign in instead' : 'Create an account';
+            authModeLink.textContent = signUp ? 'Sign In' : 'Create an account';
             loginErrorMessage.classList.add('hidden');
         }
 
@@ -760,6 +770,7 @@
             authNationalityLabel.classList.add('hidden');
             document.getElementById('auth-password-label').classList.add('hidden');
             authConfirmPasswordLabel.classList.add('hidden');
+            document.getElementById('auth-terms-label').classList.add('hidden');
             document.getElementById('forgot-password-container').classList.add('hidden');
             
             authSigninToggle.classList.add('hidden');
@@ -800,6 +811,12 @@
 
             if (!email || !password || (isSignUpMode && !name)) {
                 loginErrorMessage.textContent = isSignUpMode ? 'Enter your name, email, and password.' : 'Please enter your email and password.';
+                loginErrorMessage.classList.remove('hidden');
+                return;
+            }
+
+            if (isSignUpMode && !document.getElementById('auth-terms').checked) {
+                loginErrorMessage.textContent = 'Please agree to the Terms & Conditions and Privacy Policy.';
                 loginErrorMessage.classList.remove('hidden');
                 return;
             }

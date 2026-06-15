@@ -213,9 +213,14 @@
         // State Management: Redirect on successful login
         auth.onAuthStateChanged((user) => {
             if (user) {
-                window.location.href = 'dashboard.html';
+                // If user visits app.html and is already logged in, redirect them
+                window.location.replace('compiler.html');
             }
         });
+
+        function handleSuccessfulLogin() {
+            window.location.replace('compiler.html');
+        }
 
         // Helper to clear errors
         const clearErrors = () => {
@@ -249,39 +254,43 @@
         };
 
         // Google Auth
-        document.getElementById('google-login-btn').addEventListener('click', async () => {
+        document.getElementById('google-login-btn').addEventListener('click', () => {
             clearErrors();
             const provider = new firebase.auth.GoogleAuthProvider();
-            try {
-                await auth.signInWithPopup(provider);
-            } catch (error) {
-                if (error.code === 'auth/popup-closed-by-user') {
-                    console.log("Google login popup closed by user.");
-                } else {
-                    console.error("Google login failed", error);
-                    showError(error.code, error.message);
-                }
-            }
+            auth.signInWithPopup(provider)
+                .then(() => {
+                    handleSuccessfulLogin();
+                })
+                .catch((error) => {
+                    if (error.code === 'auth/popup-closed-by-user') {
+                        console.log("Google login popup closed by user.");
+                    } else {
+                        console.error("Google login failed", error);
+                        showError(error.code, error.message);
+                    }
+                });
         });
 
         // GitHub Auth
-        document.getElementById('github-login-btn').addEventListener('click', async () => {
+        document.getElementById('github-login-btn').addEventListener('click', () => {
             clearErrors();
             const provider = new firebase.auth.GithubAuthProvider();
-            try {
-                await auth.signInWithPopup(provider);
-            } catch (error) {
-                if (error.code === 'auth/popup-closed-by-user') {
-                    console.log("GitHub login popup closed by user.");
-                } else {
-                    console.error("GitHub login failed", error);
-                    showError(error.code, error.message);
-                }
-            }
+            auth.signInWithPopup(provider)
+                .then(() => {
+                    handleSuccessfulLogin();
+                })
+                .catch((error) => {
+                    if (error.code === 'auth/popup-closed-by-user') {
+                        console.log("GitHub login popup closed by user.");
+                    } else {
+                        console.error("GitHub login failed", error);
+                        showError(error.code, error.message);
+                    }
+                });
         });
 
         // Email/Password Registration
-        document.getElementById('visauraForm').addEventListener('submit', async (e) => {
+        document.getElementById('visauraForm').addEventListener('submit', (e) => {
             e.preventDefault();
             clearErrors();
             
@@ -289,18 +298,19 @@
             const password = document.getElementById('password').value;
             const fullName = document.getElementById('fullName').value;
             
-            try {
-                // Register the user
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                
-                // Update profile with Full Name
-                if (userCredential.user) {
-                    await userCredential.user.updateProfile({ displayName: fullName });
-                }
-            } catch (error) {
-                console.error("Registration failed", error);
-                showError(error.code, error.message);
-            }
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    if (userCredential.user) {
+                        return userCredential.user.updateProfile({ displayName: fullName });
+                    }
+                })
+                .then(() => {
+                    handleSuccessfulLogin();
+                })
+                .catch((error) => {
+                    console.error("Registration failed", error);
+                    showError(error.code, error.message);
+                });
         });
     </script>
 </body>

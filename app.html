@@ -212,14 +212,14 @@
 
         // State Management: Redirect on successful login
         auth.onAuthStateChanged((user) => {
-            // Logged in users should be redirected to compiler.html
+            // Logged in users should not be redirected from this page
             if (user) {
-                window.location.replace('compiler.html');
+                console.log("User is already logged in, but redirection is disabled.");
             }
         });
 
         function handleSuccessfulLogin() {
-            window.location.replace('compiler.html');
+            console.log("Login successful, redirection is disabled.");
         }
 
         // Helper to clear errors

@@ -212,14 +212,14 @@
 
         // State Management: Redirect on successful login
         auth.onAuthStateChanged((user) => {
+            // Logged in users should not be redirected from this page
             if (user) {
-                // If user visits app.html and is already logged in, redirect them
-                window.location.replace('compiler.html');
+                console.log("User is already logged in, but redirection is disabled.");
             }
         });
 
         function handleSuccessfulLogin() {
-            window.location.replace('compiler.html');
+            window.location.replace('dashboard.html');
         }
 
         // Helper to clear errors
